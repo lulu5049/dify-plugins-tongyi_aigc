@@ -4,7 +4,7 @@ tags:
   - productivity
   - image
   - videos
-author: sawyer-shi
+author: lulu5049
 name: tongyi_aigc
 label:
   en_US: "TongYi AIGC"
@@ -48,5 +48,5 @@ meta:
   minimum_dify_version: null
 created_at: 2026-02-15T11:19:55.825854+08:00
 privacy: PRIVACY.md
-repo: https://github.com/sawyer-shi/dify-plugins-tongyi_aigc
+repo: https://github.com/lulu5049/dify-plugins-tongyi_aigc
 verified: false

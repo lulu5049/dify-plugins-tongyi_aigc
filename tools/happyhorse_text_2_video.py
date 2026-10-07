@@ -7,6 +7,8 @@ import requests
 from dify_plugin import Tool
 from dify_plugin.entities.tool import ToolInvokeMessage
 
+from tools.bailian_endpoints import native_base_url
+
 logger = logging.getLogger(__name__)
 
 class HappyHorseText2VideoTool(Tool):
@@ -24,7 +26,7 @@ class HappyHorseText2VideoTool(Tool):
                 yield self.create_text_message(msg)
                 return
 
-            api_url = "https://dashscope.aliyuncs.com/api/v1/services/aigc/video-generation/video-synthesis"
+            api_url = f"{native_base_url(self.runtime.credentials)}/services/aigc/video-generation/video-synthesis"
             headers = {
                 "Authorization": f"Bearer {api_key}",
                 "Content-Type": "application/json",

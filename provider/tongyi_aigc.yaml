@@ -15,13 +15,13 @@ credentials_for_provider:
       zh_Hans: 请使用与下方 Base URL 属于同一阿里云百炼业务空间的 API Key。
     label:
       en_US: Bailian API Key
-      zh_Hans: Bailian API Key
+      zh_Hans: 百炼 API Key
     placeholder:
       en_US: Please input your Bailian API Key
       zh_Hans: 请输入您的百炼 API Key
     required: true
     type: secret-input
-    url: https://dashscope.console.aliyun.com/apiKey
+    url: https://bailian.console.aliyun.com/
   base_url:
     help:
       en_US: Paste the Base URL copied from Alibaba Cloud Bailian. URLs ending in /compatible-mode/v1 are supported; the plugin automatically derives /api/v1 for native image/video APIs.

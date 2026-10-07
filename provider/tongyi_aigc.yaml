@@ -11,17 +11,31 @@ identity:
 credentials_for_provider:
   api_key:
     help:
-      en_US: Get your Tongyi API key from Alibaba Cloud DashScope and ensure the required models are enabled.
-      zh_Hans: 从阿里云DashScope获取API Key，并确保已开通相关模型。
+      en_US: Get your API key from the same Alibaba Cloud Bailian workspace as the Base URL below.
+      zh_Hans: 请使用与下方 Base URL 属于同一阿里云百炼业务空间的 API Key。
     label:
-      en_US: Tongyi API Key
-      zh_Hans: Tongyi API Key
+      en_US: Bailian API Key
+      zh_Hans: Bailian API Key
     placeholder:
-      en_US: Please input your Tongyi API Key
-      zh_Hans: 请输入您的Tongyi API Key
+      en_US: Please input your Bailian API Key
+      zh_Hans: 请输入您的百炼 API Key
     required: true
     type: secret-input
     url: https://dashscope.console.aliyun.com/apiKey
+  base_url:
+    help:
+      en_US: Paste the Base URL copied from Alibaba Cloud Bailian. URLs ending in /compatible-mode/v1 are supported; the plugin automatically derives /api/v1 for native image/video APIs.
+      zh_Hans: 直接粘贴阿里云百炼控制台复制的 Base URL。支持以 /compatible-mode/v1 结尾的地址，插件会自动推导图片/视频原生接口使用的 /api/v1。
+    label:
+      en_US: Bailian Base URL
+      zh_Hans: 百炼 Base URL
+    placeholder:
+      en_US: https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/compatible-mode/v1
+      zh_Hans: https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com/compatible-mode/v1
+    required: true
+    type: text-input
+    url: https://help.aliyun.com/zh/model-studio/base-url
+
 tools:
   - tools/z_image_text_2_image.yaml
   - tools/qwen_text_2_image.yaml

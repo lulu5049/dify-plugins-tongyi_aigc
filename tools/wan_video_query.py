@@ -9,6 +9,8 @@ import requests
 from dify_plugin import Tool
 from dify_plugin.entities.tool import ToolInvokeMessage
 
+from tools.bailian_endpoints import native_base_url
+
 logger = logging.getLogger(__name__)
 
 
@@ -32,7 +34,7 @@ class WanVideoQueryTool(Tool):
 
             download_video = tool_parameters.get("download_video", "false") == "true"
 
-            api_url = f"https://dashscope.aliyuncs.com/api/v1/tasks/{task_id}"
+            api_url = f"{native_base_url(self.runtime.credentials)}/tasks/{task_id}"
             headers = {
                 "Authorization": f"Bearer {api_key}",
                 "Content-Type": "application/json",

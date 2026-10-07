@@ -9,6 +9,8 @@ import requests
 from dify_plugin import Tool
 from dify_plugin.entities.tool import ToolInvokeMessage
 
+from tools.bailian_endpoints import native_base_url
+
 logger = logging.getLogger(__name__)
 
 QWEN_IMAGE_2_SERIES_MODELS = {
@@ -42,7 +44,7 @@ class QwenText2ImageTool(Tool):
                 yield self.create_text_message(msg)
                 return
 
-            api_url = "https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation"
+            api_url = f"{native_base_url(self.runtime.credentials)}/services/aigc/multimodal-generation/generation"
             headers = {
                 "Authorization": f"Bearer {api_key}",
                 "Content-Type": "application/json",

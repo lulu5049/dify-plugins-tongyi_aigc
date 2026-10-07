@@ -10,6 +10,8 @@ import requests
 from dify_plugin import Tool
 from dify_plugin.entities.tool import ToolInvokeMessage
 
+from tools.bailian_endpoints import native_base_url
+
 logger = logging.getLogger(__name__)
 
 
@@ -87,7 +89,7 @@ class QwenImageTranslateTool(Tool):
                     skip_img_segment
                 )
 
-            api_url = "https://dashscope.aliyuncs.com/api/v1/services/aigc/image2image/image-synthesis"
+            api_url = f"{native_base_url(self.runtime.credentials)}/services/aigc/image2image/image-synthesis"
             headers = {
                 "Authorization": f"Bearer {api_key}",
                 "Content-Type": "application/json",
@@ -165,7 +167,7 @@ class QwenImageTranslateTool(Tool):
     def _check_task_status(task_id: str, api_key: str) -> dict[str, Any] | None:
         max_attempts = 30
         attempt = 0
-        api_url = f"https://dashscope.aliyuncs.com/api/v1/tasks/{task_id}"
+        api_url = f"{native_base_url(self.runtime.credentials)}/tasks/{task_id}"
         headers = {
             "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json",

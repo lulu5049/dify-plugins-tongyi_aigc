@@ -4,12 +4,18 @@ A powerful Dify plugin providing comprehensive AI-powered image and video genera
 
 ## Version Information
 
-- **Current Version**: v0.0.4
-- **Release Date**: 2026-07-05
+- **Current Version**: v0.0.5
+- **Release Date**: 2026-10-08
 - **Compatibility**: Dify Plugin Framework
 - **Python Version**: 3.12
 
 ### Version History
+- **v0.0.5** (2026-10-08):
+  - Added Alibaba Cloud Bailian workspace-specific Base URL support
+  - Paste a URL ending in `/compatible-mode/v1`; the plugin automatically derives native `/api/v1`
+  - Removed hard-coded DashScope native API hosts from image/video/query tools
+  - Credential validation now uses the configured Bailian workspace endpoint
+
 - **v0.0.4** (2026-07-05):
   - Added **HappyHorse 1.1** model for all HappyHorse video generation tools
   - Updated default model to happyhorse-1.1 for all HappyHorse features

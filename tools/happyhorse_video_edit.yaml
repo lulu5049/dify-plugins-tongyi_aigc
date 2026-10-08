@@ -93,7 +93,7 @@ parameters:
       zh_Hans: "在视频中添加水印"
     llm_description: "Whether to add watermark"
     form: form
-    default: true
+    default: false
   - name: audio_setting
     type: select
     required: false

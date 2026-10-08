@@ -11,6 +11,7 @@ from dify_plugin import Tool
 from dify_plugin.entities.tool import ToolInvokeMessage
 
 from tools.bailian_endpoints import native_base_url
+from tools.bailian_task_waiter import maybe_wait_for_video
 from tools.video_model_compat import is_wan3, normalize_reference_parameters
 
 logger = logging.getLogger(__name__)
@@ -197,6 +198,15 @@ class WanReferenceVideoTool(Tool):
                 result_data = response.json()
             except json.JSONDecodeError:
                 yield self.create_text_message("❌ API 响应解析失败（非JSON）")
+                return
+
+            handled = yield from maybe_wait_for_video(
+                self,
+                self.runtime.credentials,
+                result_data,
+                tool_parameters,
+            )
+            if handled:
                 return
 
             if "output" in result_data:

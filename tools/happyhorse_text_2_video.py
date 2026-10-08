@@ -8,6 +8,7 @@ from dify_plugin import Tool
 from dify_plugin.entities.tool import ToolInvokeMessage
 
 from tools.bailian_endpoints import native_base_url
+from tools.video_model_compat import normalize_happyhorse_parameters
 
 logger = logging.getLogger(__name__)
 
@@ -50,24 +51,14 @@ class HappyHorseText2VideoTool(Tool):
                 "parameters": {},
             }
 
-            params = payload["parameters"]
+            params, compatibility_notes = normalize_happyhorse_parameters(
+                model, tool_parameters, with_ratio=True
+            )
+            payload["parameters"] = params
+            for note in compatibility_notes:
+                yield self.create_text_message(f"ℹ️ {note}")
 
-            resolution = tool_parameters.get("resolution")
-            if resolution:
-                params["resolution"] = str(resolution).strip()
-            
-            ratio = tool_parameters.get("ratio")
-            if ratio:
-                params["ratio"] = str(ratio).strip()
-
-            duration = tool_parameters.get("duration")
-            if duration is not None:
-                try:
-                    params["duration"] = int(duration)
-                except (TypeError, ValueError):
-                    msg = f"❌ 无效的 duration 参数: {duration}"
-                    logger.error(msg)
-                    yield self.create_text_message(msg)
+            yield self.create_text_message(msg)
                     return
             
             watermark = tool_parameters.get("watermark")

@@ -22,8 +22,7 @@ WAN_LEGACY_ASYNC_MODELS = {
     "wan2.2-t2i-flash",
     "wanx2.1-t2i-plus",
     "wanx2.1-t2i-turbo",
-    "wanx2.0-t2i-turbo",
-}
+    }
 SUPPORTED_MODELS = WAN_27_MODELS | WAN_26_MODELS | WAN_LEGACY_ASYNC_MODELS
 
 WAN_26_SIZE_OPTIONS = {
@@ -59,7 +58,7 @@ class WanText2ImageTool(Tool):
                 "Content-Type": "application/json",
             }
 
-            model = tool_parameters.get("model", "wanx2.0-t2i-turbo")
+            model = tool_parameters.get("model", "wan2.2-t2i-flash")
             if model not in SUPPORTED_MODELS:
                 msg = f"❌ 不支持的模型: {model}"
                 logger.warning(msg)
@@ -75,7 +74,21 @@ class WanText2ImageTool(Tool):
                 yield self.create_text_message(msg)
                 return
 
-            prompt_limit = 5000 if is_wan27 else 2100
+            if is_wan27:
+                prompt_limit = 5000
+            elif model == "wan2.6-t2i":
+                prompt_limit = 2100
+            elif model == "wan2.5-t2i-preview":
+                prompt_limit = 2000
+            elif model in {
+                "wan2.2-t2i-plus",
+                "wan2.2-t2i-flash",
+                "wanx2.1-t2i-plus",
+                "wanx2.1-t2i-turbo",
+            }:
+                prompt_limit = 500
+            else:
+                prompt_limit = 800
             if len(prompt) > prompt_limit:
                 prompt = prompt[:prompt_limit]
 
@@ -131,7 +144,7 @@ class WanText2ImageTool(Tool):
                     "input": {"prompt": prompt},
                     "parameters": {
                         "size": size if "*" in str(size) else "1024*1024",
-                        "n": 1,
+                        "n": max(1, min(4, int(n) if n is not None else 1)),
                         "prompt_extend": bool(prompt_extend) if prompt_extend is not None else False,
                         "watermark": bool(watermark) if watermark is not None else False,
                     },

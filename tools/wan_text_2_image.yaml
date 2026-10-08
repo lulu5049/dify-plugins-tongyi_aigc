@@ -21,12 +21,8 @@ parameters:
       zh_Hans: "文生图模型。默认使用北京区当前最低单价档。"
     llm_description: "AI model for text-to-image generation"
     form: form
-    default: "wanx2.0-t2i-turbo"
+    default: "wan2.2-t2i-flash"
     options:
-      - value: "wanx2.0-t2i-turbo"
-        label:
-          en_US: "Wan 2.0 T2I Turbo (wanx2.0-t2i-turbo) - ¥0.04/image"
-          zh_Hans: "万相2.0文生图Turbo（wanx2.0-t2i-turbo）- ¥0.04/张"
       - value: "wanx2.1-t2i-turbo"
         label:
           en_US: "Wan 2.1 T2I Turbo (wanx2.1-t2i-turbo) - ¥0.14/image"

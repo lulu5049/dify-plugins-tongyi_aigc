@@ -27,7 +27,7 @@ class WanFirstImage2VideoTool(Tool):
         logger.info("Starting wan image-to-video task")
 
         try:
-            model = tool_parameters.get("model", "wan2.6-i2v").strip()
+            model = tool_parameters.get("model", "wan2.2-i2v-flash").strip()
             is_wan30 = is_wan3(model)
             is_wan27_i2v = model.startswith("wan2.7-i2v")
             uses_media_protocol = is_wan30 or is_wan27_i2v

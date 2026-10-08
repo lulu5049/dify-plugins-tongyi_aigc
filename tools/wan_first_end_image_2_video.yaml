@@ -113,27 +113,49 @@ parameters:
   - name: resolution
     type: select
     required: false
-    label:
-      en_US: "Resolution"
-      zh_Hans: "分辨率"
-    human_description:
-      en_US: "Video resolution quality"
-      zh_Hans: "视频分辨率质量"
-    llm_description: "Video resolution quality"
+    label: { en_US: "Resolution", zh_Hans: "分辨率" }
+    human_description: { en_US: "Options depend on the selected model.", zh_Hans: "可选分辨率会根据模型动态变化。" }
+    llm_description: "Video resolution"
     form: form
+    default: "480P"
     options:
       - value: "480P"
-        label:
-          en_US: "480P"
-          zh_Hans: "480P"
+        label: { en_US: "480P", zh_Hans: "480P" }
+        show_on: [{ variable: model, value: "wan2.2-kf2v-flash" }]
       - value: "720P"
-        label:
-          en_US: "720P"
-          zh_Hans: "720P"
+        label: { en_US: "720P", zh_Hans: "720P" }
+        show_on: [{ variable: model, value: "wan2.2-kf2v-flash" }]
       - value: "1080P"
-        label:
-          en_US: "1080P"
-          zh_Hans: "1080P"
+        label: { en_US: "1080P", zh_Hans: "1080P" }
+        show_on: [{ variable: model, value: "wan2.2-kf2v-flash" }]
+      - value: "720P"
+        label: { en_US: "720P", zh_Hans: "720P" }
+        show_on: [{ variable: model, value: "wanx2.1-kf2v-plus" }]
+      - value: "720P"
+        label: { en_US: "720P", zh_Hans: "720P" }
+        show_on: [{ variable: model, value: "wan2.7-i2v" }]
+      - value: "1080P"
+        label: { en_US: "1080P", zh_Hans: "1080P" }
+        show_on: [{ variable: model, value: "wan2.7-i2v" }]
+      - value: "480P"
+        label: { en_US: "480P", zh_Hans: "480P" }
+        show_on: [{ variable: model, value: "wan3.0-video" }]
+      - value: "720P"
+        label: { en_US: "720P", zh_Hans: "720P" }
+        show_on: [{ variable: model, value: "wan3.0-video" }]
+      - value: "1080P"
+        label: { en_US: "1080P", zh_Hans: "1080P" }
+        show_on: [{ variable: model, value: "wan3.0-video" }]
+      - value: "480P"
+        label: { en_US: "480P", zh_Hans: "480P" }
+        show_on: [{ variable: model, value: "wan3.0-video-prime" }]
+      - value: "720P"
+        label: { en_US: "720P", zh_Hans: "720P" }
+        show_on: [{ variable: model, value: "wan3.0-video-prime" }]
+      - value: "1080P"
+        label: { en_US: "1080P", zh_Hans: "1080P" }
+        show_on: [{ variable: model, value: "wan3.0-video-prime" }]
+
   - name: ratio
     type: select
     required: false
@@ -197,7 +219,7 @@ parameters:
       zh_Hans: "启用提示词智能改写"
     llm_description: "Whether to enable prompt intelligent rewriting"
     form: form
-    default: true
+    default: false
   - name: watermark
     type: boolean
     required: false
@@ -209,7 +231,7 @@ parameters:
       zh_Hans: "在视频中添加水印"
     llm_description: "Whether to add watermark"
     form: form
-    default: true
+    default: false
   - name: seed
     type: number
     required: false

@@ -39,7 +39,7 @@ class HappyHorseReferenceVideoTool(Tool):
                 "X-DashScope-Async": "enable",
             }
 
-            model = str(tool_parameters.get("model") or "happyhorse-1.0-r2v").strip()
+            model = str(tool_parameters.get("model") or "happyhorse-1.1-r2v").strip()
             
             # Process reference images
             media: list[dict[str, str]] = []

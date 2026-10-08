@@ -49,7 +49,7 @@ def wait_for_bailian_task(
         if elapsed >= max_wait_seconds:
             yield tool.create_text_message(
                 f"⌛ 已等待 {elapsed}s，任务仍未结束。Task ID: {task_id}。"
-                "任务可能仍在百炼后台排队，可稍后用“视频结果查询”继续查询。"
+                "任务可能仍在百炼后台排队，可稍后用对应的结果查询工具继续查询。"
             )
             return None
 
@@ -86,13 +86,13 @@ def wait_for_bailian_task(
 
         if status != last_status:
             yield tool.create_text_message(
-                f"🔄 视频任务状态: {status}（已等待 {elapsed}s）"
+                f"🔄 任务状态: {status}（已等待 {elapsed}s）"
             )
             last_status = status
             last_heartbeat = elapsed
         elif elapsed - last_heartbeat >= heartbeat_seconds:
             yield tool.create_text_message(
-                f"⏳ 视频任务仍为 {status}（已等待 {elapsed}s）"
+                f"⏳ 任务仍为 {status}（已等待 {elapsed}s）"
             )
             last_heartbeat = elapsed
 
@@ -154,24 +154,18 @@ def maybe_wait_for_video(
     submit_response: dict[str, Any],
     tool_parameters: dict[str, Any],
 ) -> Generator[ToolInvokeMessage, None, bool]:
-    """Wait for a submitted video task when wait_for_completion is enabled.
+    """Wait for a submitted video task until Bailian returns a terminal state.
 
-    Returns True when this helper handled the response (waited, timed out, or
-    emitted a terminal result). Returns False for legacy asynchronous behavior.
+    Waiting is an internal plugin behavior, not a user-facing form parameter.
     """
-    if not _parse_bool(tool_parameters.get("wait_for_completion"), True):
-        return False
+
 
     output = submit_response.get("output", {}) or {}
     task_id = str(output.get("task_id") or "").strip()
     if not task_id:
         return False
 
-    try:
-        max_wait = int(tool_parameters.get("max_wait_seconds") or 540)
-    except (TypeError, ValueError):
-        max_wait = 540
-    max_wait = max(30, min(max_wait, 900))
+    max_wait = 540
 
     yield tool.create_text_message(
         f"✅ 任务已提交，Task ID: {task_id}。现在由插件自动等待最终结果..."
@@ -186,4 +180,61 @@ def maybe_wait_for_video(
     )
     if final_data is not None:
         yield from emit_final_video_result(tool, final_data)
+    return True
+
+
+def emit_final_image_result(
+    tool: Any,
+    result_data: dict[str, Any],
+) -> Generator[ToolInvokeMessage, None, None]:
+    output = result_data.get("output", {}) or {}
+    status = str(output.get("task_status") or "UNKNOWN").upper()
+    task_id = output.get("task_id", "unknown")
+
+    if status == "SUCCEEDED":
+        results = output.get("results", []) or []
+        yield tool.create_text_message(f"✅ 图片生成完成！Task ID: {task_id}")
+        for result in results:
+            if isinstance(result, dict):
+                image_url = result.get("url") or result.get("image_url") or ""
+                if image_url:
+                    yield tool.create_image_message(image_url)
+        yield tool.create_json_message(result_data)
+        return
+
+    error_code = output.get("code", "Unknown")
+    error_message = output.get("message", "Unknown error")
+    yield tool.create_text_message(
+        f"❌ 图片任务失败\n"
+        f"Task ID: {task_id}\n"
+        f"Status: {status}\n"
+        f"Error Code: {error_code}\n"
+        f"Error Message: {error_message}"
+    )
+    yield tool.create_json_message(result_data)
+
+
+def wait_and_emit_image(
+    tool: Any,
+    credentials: dict[str, Any],
+    submit_response: dict[str, Any],
+) -> Generator[ToolInvokeMessage, None, bool]:
+    output = submit_response.get("output", {}) or {}
+    task_id = str(output.get("task_id") or "").strip()
+    if not task_id:
+        return False
+
+    yield tool.create_text_message(
+        f"✅ 任务已提交，Task ID: {task_id}。插件正在自动等待图片生成完成..."
+    )
+    final_data = yield from wait_for_bailian_task(
+        tool,
+        credentials,
+        task_id,
+        poll_interval_seconds=5,
+        max_wait_seconds=540,
+        heartbeat_seconds=30,
+    )
+    if final_data is not None:
+        yield from emit_final_image_result(tool, final_data)
     return True

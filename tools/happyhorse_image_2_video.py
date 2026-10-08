@@ -39,7 +39,7 @@ class HappyHorseImage2VideoTool(Tool):
                 "X-DashScope-Async": "enable",
             }
 
-            model = str(tool_parameters.get("model") or "happyhorse-1.0-i2v").strip()
+            model = str(tool_parameters.get("model") or "happyhorse-1.1-i2v").strip()
             
             # Extract and process image
             image_obj = tool_parameters.get("image_input")

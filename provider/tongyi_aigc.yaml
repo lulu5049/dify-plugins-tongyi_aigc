@@ -5,8 +5,8 @@ identity:
     en_US: "TongYi AIGC"
     zh_Hans: "通义AIGC"
   description:
-    en_US: 'TongYi AIGC: Supports full-featured image and video generation using the latest Alibaba Tongyi models (HappyHorse1.1, wan2.7, qwen-image2.0, Z-image, wan2.6,wan2.5, wan2.2, and wanx2.1).'
-    zh_Hans: '通义AIGC：支持全套图片+视频的生成、编辑等操作，使用最新的阿里通义模型(HappyHorse1.1、wan2.7、qwen-image2.0、Z-Image以及wan2.6、wan2.5、wan2.2和wanx2.1)。'
+    en_US: 'TongYi AIGC: Supports full-featured image and video generation using the latest Alibaba Tongyi models (wan3.0, HappyHorse1.1, wan2.7, qwen-image2.0, Z-image, wan2.6,wan2.5, wan2.2, and wanx2.1).'
+    zh_Hans: '通义AIGC：支持全套图片+视频的生成、编辑等操作，使用最新的阿里通义模型(wan3.0、HappyHorse1.1、wan2.7、qwen-image2.0、Z-Image以及wan2.6、wan2.5、wan2.2和wanx2.1)。'
   icon: "icon.svg"
 credentials_for_provider:
   api_key:

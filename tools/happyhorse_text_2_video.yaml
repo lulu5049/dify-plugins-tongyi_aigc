@@ -99,7 +99,8 @@ parameters:
       - value: "3:4"
         label:
           en_US: "3:4"
-          zh_Hans: "3:4"      - value: "4:5"
+          zh_Hans: "3:4"
+      - value: "4:5"
         label:
           en_US: "4:5"
           zh_Hans: "4:5"

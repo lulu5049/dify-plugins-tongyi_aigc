@@ -23,34 +23,46 @@ parameters:
     form: form
     default: "wan2.6-i2v"
     options:
+      - value: "wan3.0-video-prime"
+        label:
+          en_US: "Wan 3.0 Video Prime (wan3.0-video-prime)"
+          zh_Hans: "万相3.0视频优速版（wan3.0-video-prime）"
+      - value: "wan3.0-video"
+        label:
+          en_US: "Wan 3.0 Video (wan3.0-video)"
+          zh_Hans: "万相3.0视频（wan3.0-video）"
       - value: "wan2.7-i2v"
         label:
-          en_US: "Wanxiang 2.7 Image to Video"
-          zh_Hans: "万相2.7图生视频"
+          en_US: "Wanxiang 2.7 Image to Video (wan2.7-i2v)"
+          zh_Hans: "万相2.7图生视频（wan2.7-i2v）"
+      - value: "wan2.6-i2v-flash"
+        label:
+          en_US: "Wanxiang 2.6 Image to Video Flash (wan2.6-i2v-flash)"
+          zh_Hans: "万相2.6图生视频闪速版（wan2.6-i2v-flash）"
       - value: "wan2.6-i2v"
         label:
-          en_US: "Wanxiang 2.6 Image to Video"
-          zh_Hans: "万相2.6图生视频"
+          en_US: "Wanxiang 2.6 Image to Video (wan2.6-i2v)"
+          zh_Hans: "万相2.6图生视频（wan2.6-i2v）"
       - value: "wan2.5-i2v-preview"
         label:
-          en_US: "Wanxiang 2.5 Image to Video Preview"
-          zh_Hans: "万相2.5图生视频预览"
+          en_US: "Wanxiang 2.5 Image to Video Preview (wan2.5-i2v-preview)"
+          zh_Hans: "万相2.5图生视频预览（wan2.5-i2v-preview）"
       - value: "wan2.2-i2v-flash"
         label:
-          en_US: "Wanxiang 2.2 Image to Video Flash"
-          zh_Hans: "万相2.2图生视频闪速"
+          en_US: "Wanxiang 2.2 Image to Video Flash (wan2.2-i2v-flash)"
+          zh_Hans: "万相2.2图生视频闪速版（wan2.2-i2v-flash）"
       - value: "wan2.2-i2v-plus"
         label:
-          en_US: "Wanxiang 2.2 Image to Video Plus"
-          zh_Hans: "万相2.2图生视频增强"
+          en_US: "Wanxiang 2.2 Image to Video Plus (wan2.2-i2v-plus)"
+          zh_Hans: "万相2.2图生视频增强版（wan2.2-i2v-plus）"
       - value: "wanx2.1-i2v-turbo"
         label:
-          en_US: "Wanxiang 2.1 Image to Video Turbo"
-          zh_Hans: "万相2.1图生视频极速"
+          en_US: "Wanxiang 2.1 Image to Video Turbo (wanx2.1-i2v-turbo)"
+          zh_Hans: "万相2.1图生视频极速版（wanx2.1-i2v-turbo）"
       - value: "wanx2.1-i2v-plus"
         label:
-          en_US: "Wanxiang 2.1 Image to Video Plus"
-          zh_Hans: "万相2.1图生视频增强"
+          en_US: "Wanxiang 2.1 Image to Video Plus (wanx2.1-i2v-plus)"
+          zh_Hans: "万相2.1图生视频增强版（wanx2.1-i2v-plus）"
   - name: prompt
     type: string
     required: false
@@ -158,8 +170,8 @@ parameters:
       en_US: "Resolution"
       zh_Hans: "分辨率"
     human_description:
-      en_US: "Video resolution quality. wan2.7-i2v supports 720P/1080P only."
-      zh_Hans: "视频分辨率质量。wan2.7-i2v 仅支持 720P/1080P。"
+      en_US: "Model-aware resolution. Wan 3.0 supports 480P/720P/1080P; older models have their own limits and are auto-corrected."
+      zh_Hans: "按模型自动匹配分辨率。Wan 3.0 支持 480P/720P/1080P；旧模型限制不同，插件会自动纠正。"
     llm_description: "Video resolution quality for image-to-video generation"
     form: form
     default: "1080P"
@@ -176,6 +188,47 @@ parameters:
         label:
           en_US: "1080P"
           zh_Hans: "1080P"
+  - name: ratio
+    type: select
+    required: false
+    label:
+      en_US: "Aspect Ratio"
+      zh_Hans: "宽高比"
+    human_description:
+      en_US: "Used by Wan 3.0. Adaptive is recommended for image-to-video."
+      zh_Hans: "用于 Wan 3.0，图生视频推荐使用 adaptive 自适应首帧比例。"
+    llm_description: "Aspect ratio for Wan 3.0 image-to-video"
+    form: form
+    default: "adaptive"
+    options:
+      - value: "adaptive"
+        label:
+          en_US: "Adaptive"
+          zh_Hans: "自适应"
+      - value: "21:9"
+        label:
+          en_US: "21:9"
+          zh_Hans: "21:9"
+      - value: "16:9"
+        label:
+          en_US: "16:9"
+          zh_Hans: "16:9"
+      - value: "4:3"
+        label:
+          en_US: "4:3"
+          zh_Hans: "4:3"
+      - value: "1:1"
+        label:
+          en_US: "1:1"
+          zh_Hans: "1:1"
+      - value: "3:4"
+        label:
+          en_US: "3:4"
+          zh_Hans: "3:4"
+      - value: "9:16"
+        label:
+          en_US: "9:16"
+          zh_Hans: "9:16"
   - name: duration
     type: string
     required: false

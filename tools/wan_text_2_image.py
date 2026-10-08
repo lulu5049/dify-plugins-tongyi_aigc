@@ -10,12 +10,21 @@ from dify_plugin import Tool
 from dify_plugin.entities.tool import ToolInvokeMessage
 
 from tools.bailian_endpoints import native_base_url
+from tools.bailian_task_waiter import wait_and_emit_image
 
 logger = logging.getLogger(__name__)
 
 WAN_27_MODELS = {"wan2.7-image-pro", "wan2.7-image"}
 WAN_26_MODELS = {"wan2.6-t2i"}
-SUPPORTED_MODELS = WAN_27_MODELS | WAN_26_MODELS
+WAN_LEGACY_ASYNC_MODELS = {
+    "wan2.5-t2i-preview",
+    "wan2.2-t2i-plus",
+    "wan2.2-t2i-flash",
+    "wanx2.1-t2i-plus",
+    "wanx2.1-t2i-turbo",
+    "wanx2.0-t2i-turbo",
+}
+SUPPORTED_MODELS = WAN_27_MODELS | WAN_26_MODELS | WAN_LEGACY_ASYNC_MODELS
 
 WAN_26_SIZE_OPTIONS = {
     "1280*1280",
@@ -50,13 +59,14 @@ class WanText2ImageTool(Tool):
                 "Content-Type": "application/json",
             }
 
-            model = tool_parameters.get("model", "wan2.7-image-pro")
+            model = tool_parameters.get("model", "wanx2.0-t2i-turbo")
             if model not in SUPPORTED_MODELS:
                 msg = f"❌ 不支持的模型: {model}"
                 logger.warning(msg)
                 yield self.create_text_message(msg)
                 return
             is_wan27 = model in WAN_27_MODELS
+            is_legacy_async = model in WAN_LEGACY_ASYNC_MODELS
 
             prompt = tool_parameters.get("prompt", "").strip()
             if not prompt:
@@ -75,13 +85,16 @@ class WanText2ImageTool(Tool):
             prompt_extend = tool_parameters.get("prompt_extend")
             watermark = tool_parameters.get("watermark")
             n = tool_parameters.get("n")
-            size = tool_parameters.get("size", "2K" if is_wan27 else "1280*1280")
+            size = tool_parameters.get(
+                "size",
+                "1024*1024" if is_legacy_async else ("2K" if is_wan27 else "1280*1280"),
+            )
             seed = tool_parameters.get("seed")
             enable_sequential = tool_parameters.get("enable_sequential")
             thinking_mode = tool_parameters.get("thinking_mode")
 
             if not size:
-                size = "2K" if is_wan27 else "1280*1280"
+                size = "1024*1024" if is_legacy_async else ("2K" if is_wan27 else "1280*1280")
 
             if not self._is_valid_size(model=model, size=size, enable_sequential=bool(enable_sequential)):
                 if is_wan27:
@@ -102,6 +115,70 @@ class WanText2ImageTool(Tool):
             )
             yield self.create_text_message(f"📐 图像尺寸: {size}")
             yield self.create_text_message("⏳ 正在连接通义API...")
+
+            if is_legacy_async:
+                legacy_url = (
+                    f"{native_base_url(self.runtime.credentials)}/services/aigc/"
+                    "text2image/image-synthesis"
+                )
+                legacy_headers = {
+                    "Authorization": f"Bearer {api_key}",
+                    "Content-Type": "application/json",
+                    "X-DashScope-Async": "enable",
+                }
+                legacy_payload: dict[str, Any] = {
+                    "model": model,
+                    "input": {"prompt": prompt},
+                    "parameters": {
+                        "size": size if "*" in str(size) else "1024*1024",
+                        "n": 1,
+                        "prompt_extend": bool(prompt_extend) if prompt_extend is not None else False,
+                        "watermark": bool(watermark) if watermark is not None else False,
+                    },
+                }
+                if negative_prompt:
+                    legacy_payload["input"]["negative_prompt"] = negative_prompt
+                if seed is not None:
+                    try:
+                        legacy_payload["parameters"]["seed"] = int(seed)
+                    except (TypeError, ValueError):
+                        pass
+
+                yield self.create_text_message(
+                    f"🚀 文生图任务启动：{model} / {legacy_payload['parameters']['size']} / 1张"
+                )
+                try:
+                    response = requests.post(
+                        legacy_url,
+                        headers=legacy_headers,
+                        json=legacy_payload,
+                        timeout=60,
+                    )
+                except requests.exceptions.RequestException as e:
+                    yield self.create_text_message(f"❌ 请求失败: {str(e)}")
+                    return
+
+                if response.status_code != 200:
+                    yield self.create_text_message(
+                        f"❌ API 响应状态码: {response.status_code}\n{response.text[:500]}"
+                    )
+                    return
+                try:
+                    submit_data = response.json()
+                except json.JSONDecodeError:
+                    yield self.create_text_message("❌ API 响应解析失败（非JSON）")
+                    return
+                if submit_data.get("code"):
+                    yield self.create_text_message(
+                        f"❌ API错误 ({submit_data.get('code')}): {submit_data.get('message', '')}"
+                    )
+                    yield self.create_json_message(submit_data)
+                    return
+                handled = yield from wait_and_emit_image(
+                    self, self.runtime.credentials, submit_data
+                )
+                if handled:
+                    return
 
             payload: dict[str, Any] = {
                 "model": model,
@@ -235,6 +312,16 @@ class WanText2ImageTool(Tool):
 
     @staticmethod
     def _is_valid_size(model: str, size: str, enable_sequential: bool) -> bool:
+        if model in WAN_LEGACY_ASYNC_MODELS:
+            return size in {
+                "1024*1024",
+                "1280*1280",
+                "1280*720",
+                "720*1280",
+                "768*1152",
+                "1152*768",
+            }
+
         if model in WAN_26_MODELS:
             return size in WAN_26_SIZE_OPTIONS
 

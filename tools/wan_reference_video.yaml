@@ -21,7 +21,7 @@ parameters:
       zh_Hans: "用于参考生视频的AI模型"
     llm_description: "AI model for reference video generation"
     form: form
-    default: "wan2.7-r2v"
+    default: "wan2.6-r2v-flash"
     options:
       - value: "wan3.0-video-prime"
         label:
@@ -239,7 +239,7 @@ parameters:
       zh_Hans: "启用提示词智能改写"
     llm_description: "Whether to enable prompt intelligent rewriting"
     form: form
-    default: true
+    default: false
   - name: shot_type
     type: select
     required: false
@@ -272,7 +272,7 @@ parameters:
       zh_Hans: "为生成的视频自动添加音频（仅 wan2.6-r2v-flash 支持）"
     llm_description: "Whether to automatically add audio (wan2.6-r2v-flash only)"
     form: form
-    default: true
+    default: false
   - name: watermark
     type: boolean
     required: false
@@ -284,7 +284,7 @@ parameters:
       zh_Hans: "在视频中添加水印"
     llm_description: "Whether to add watermark"
     form: form
-    default: true
+    default: false
   - name: seed
     type: number
     required: false

@@ -25,12 +25,12 @@ parameters:
     options:
       - value: "happyhorse-1.1-r2v"
         label:
-          en_US: "HappyHorse 1.1 Reference to Video"
-          zh_Hans: "HappyHorse 1.1 参考图生视频"
+          en_US: "HappyHorse 1.1 Reference to Video (happyhorse-1.1-r2v)"
+          zh_Hans: "HappyHorse 1.1 参考图生视频（happyhorse-1.1-r2v）"
       - value: "happyhorse-1.0-r2v"
         label:
-          en_US: "HappyHorse 1.0 Reference to Video"
-          zh_Hans: "HappyHorse 1.0 参考图生视频"
+          en_US: "HappyHorse 1.0 Reference to Video (happyhorse-1.0-r2v)"
+          zh_Hans: "HappyHorse 1.0 参考图生视频（happyhorse-1.0-r2v）"
   - name: prompt
     type: string
     required: true
@@ -68,6 +68,10 @@ parameters:
     form: form
     default: "1080P"
     options:
+      - value: "480P"
+        label:
+          en_US: "480P (HappyHorse 1.1 only)"
+          zh_Hans: "480P（仅 HappyHorse 1.1）"
       - value: "720P"
         label:
           en_US: "720P"
@@ -108,7 +112,23 @@ parameters:
       - value: "1:1"
         label:
           en_US: "1:1"
-          zh_Hans: "1:1"
+          zh_Hans: "1:1"      - value: "4:5"
+        label:
+          en_US: "4:5"
+          zh_Hans: "4:5"
+      - value: "5:4"
+        label:
+          en_US: "5:4"
+          zh_Hans: "5:4"
+      - value: "9:21"
+        label:
+          en_US: "9:21"
+          zh_Hans: "9:21"
+      - value: "21:9"
+        label:
+          en_US: "21:9"
+          zh_Hans: "21:9"
+
   - name: duration
     type: number
     required: false

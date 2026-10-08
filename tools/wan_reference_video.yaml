@@ -23,18 +23,26 @@ parameters:
     form: form
     default: "wan2.7-r2v"
     options:
+      - value: "wan3.0-video-prime"
+        label:
+          en_US: "Wan 3.0 Video Prime (wan3.0-video-prime)"
+          zh_Hans: "万相3.0视频优速版（wan3.0-video-prime）"
+      - value: "wan3.0-video"
+        label:
+          en_US: "Wan 3.0 Video (wan3.0-video)"
+          zh_Hans: "万相3.0视频（wan3.0-video）"
       - value: "wan2.7-r2v"
         label:
-          en_US: "Wanxiang 2.7 Reference to Video"
-          zh_Hans: "万相2.7参考生视频"
+          en_US: "Wanxiang 2.7 Reference to Video (wan2.7-r2v)"
+          zh_Hans: "万相2.7参考生视频（wan2.7-r2v）"
       - value: "wan2.6-r2v"
         label:
-          en_US: "Wanxiang 2.6 Reference to Video"
-          zh_Hans: "万相2.6参考生视频"
+          en_US: "Wanxiang 2.6 Reference to Video (wan2.6-r2v)"
+          zh_Hans: "万相2.6参考生视频（wan2.6-r2v）"
       - value: "wan2.6-r2v-flash"
         label:
-          en_US: "Wanxiang 2.6 Reference to Video Flash"
-          zh_Hans: "万相2.6参考生视频闪速"
+          en_US: "Wanxiang 2.6 Reference to Video Flash (wan2.6-r2v-flash)"
+          zh_Hans: "万相2.6参考生视频闪速版（wan2.6-r2v-flash）"
   - name: prompt
     type: string
     required: true
@@ -64,8 +72,8 @@ parameters:
       en_US: "Reference URLs"
       zh_Hans: "参考文件URL"
     human_description:
-      en_US: "Reference URLs (videos/images) separated by semicolons. For wan2.7 they are auto-mapped to media[]; max 5 references."
-      zh_Hans: "参考文件URL（视频/图片）用分号分隔。wan2.7 会自动映射到 media[]；最多5个参考素材。"
+      en_US: "Reference URLs separated by semicolons. Wan 3.0 supports up to 10 reference images and 5 reference videos; Wan 2.7 supports up to 5 visual references."
+      zh_Hans: "参考文件URL（视频/图片）用分号分隔。Wan 3.0 最多10张参考图、5段参考视频；Wan 2.7 最多5个视觉参考素材。"
     llm_description: "Reference URLs (videos or images) separated by semicolons. Used as media references."
     form: llm
   - name: first_frame_image
@@ -75,8 +83,8 @@ parameters:
       en_US: "First Frame Image"
       zh_Hans: "首帧图像"
     human_description:
-      en_US: "First frame image URL for wan2.7-r2v (optional, max 1)"
-      zh_Hans: "wan2.7-r2v 的首帧图像URL（可选，最多1张）"
+      en_US: "Optional first frame for wan2.7-r2v. Wan 3.0 reference mode cannot mix first_frame with reference media."
+      zh_Hans: "wan2.7-r2v 可选首帧；Wan 3.0 参考模式不能把 first_frame 与 reference 素材混用。"
     llm_description: "Optional first frame image URL for wan2.7-r2v"
     form: llm
   - name: reference_voice
@@ -86,8 +94,8 @@ parameters:
       en_US: "Reference Voice URL"
       zh_Hans: "参考音色URL"
     human_description:
-      en_US: "Reference voice URL for wan2.7-r2v (wav/mp3, optional)"
-      zh_Hans: "wan2.7-r2v 的参考音色URL（wav/mp3，可选）"
+      en_US: "Optional audio reference. Wan 3.0 maps this to reference_audio; wan2.7-r2v uses reference_voice."
+      zh_Hans: "可选音频参考：Wan 3.0 映射为 reference_audio；wan2.7-r2v 使用 reference_voice。"
     llm_description: "Optional reference voice URL for wan2.7-r2v"
     form: llm
   - name: size
@@ -170,6 +178,10 @@ parameters:
     form: form
     default: "1080P"
     options:
+      - value: "480P"
+        label:
+          en_US: "480P (Wan 3.0)"
+          zh_Hans: "480P（Wan 3.0）"
       - value: "720P"
         label:
           en_US: "720P"
@@ -191,6 +203,14 @@ parameters:
     form: form
     default: "16:9"
     options:
+      - value: "adaptive"
+        label:
+          en_US: "Adaptive (Wan 3.0)"
+          zh_Hans: "自适应（Wan 3.0）"
+      - value: "21:9"
+        label:
+          en_US: "21:9 (Wan 3.0)"
+          zh_Hans: "21:9（Wan 3.0）"
       - value: "16:9"
         label:
           en_US: "16:9"

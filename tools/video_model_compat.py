@@ -75,6 +75,11 @@ def _as_int(value: Any, default: int) -> int:
         return default
 
 
+def _auto_text(value: Any) -> str:
+    text = str(value or "").strip()
+    return "" if text.upper() == "AUTO" else text
+
+
 def _valid_seed(value: Any, allow_minus_one: bool = False) -> int | None:
     if value is None or str(value).strip() == "":
         return None
@@ -99,11 +104,11 @@ def normalize_t2v_parameters(model: str, p: dict[str, Any]) -> tuple[dict[str, A
     notes: list[str] = []
 
     if is_wan3(model):
-        resolution = str(p.get("resolution") or "1080P").upper()
+        resolution = (_auto_text(p.get("resolution")) or "1080P").upper()
         if resolution not in {"480P", "720P", "1080P"}:
             notes.append(f"{model} 不支持 {resolution}，已改为 1080P")
             resolution = "1080P"
-        ratio = str(p.get("ratio") or "adaptive")
+        ratio = _auto_text(p.get("ratio")) or "adaptive"
         if ratio not in WAN3_RATIOS:
             notes.append(f"{model} 不支持宽高比 {ratio}，已改为 adaptive")
             ratio = "adaptive"
@@ -118,11 +123,11 @@ def normalize_t2v_parameters(model: str, p: dict[str, Any]) -> tuple[dict[str, A
             params["seed"] = seed
 
     elif model.startswith("wan2.7-t2v"):
-        resolution = str(p.get("resolution") or "1080P").upper()
+        resolution = (_auto_text(p.get("resolution")) or "1080P").upper()
         if resolution not in {"720P", "1080P"}:
             notes.append(f"{model} 仅支持 720P/1080P，已改为 1080P")
             resolution = "1080P"
-        ratio = str(p.get("ratio") or "16:9")
+        ratio = _auto_text(p.get("ratio")) or "16:9"
         if ratio not in WAN27_RATIOS:
             notes.append(f"{model} 不支持宽高比 {ratio}，已改为 16:9")
             ratio = "16:9"
@@ -135,7 +140,7 @@ def normalize_t2v_parameters(model: str, p: dict[str, Any]) -> tuple[dict[str, A
     else:
         tiers = T2V_LEGACY_TIERS.get(model)
         if tiers:
-            size = str(p.get("size") or "").replace(" ", "")
+            size = _auto_text(p.get("size")).replace(" ", "")
             allowed = _allowed_sizes(tiers)
             if size not in allowed:
                 fixed = T2V_DEFAULT_SIZE[model]
@@ -175,7 +180,7 @@ def normalize_i2v_parameters(model: str, p: dict[str, Any]) -> tuple[dict[str, A
     notes: list[str] = []
 
     if is_wan3(model):
-        resolution = str(p.get("resolution") or "1080P").upper()
+        resolution = (_auto_text(p.get("resolution")) or "1080P").upper()
         if resolution not in {"480P", "720P", "1080P"}:
             resolution = "1080P"
             notes.append(f"{model} 分辨率已改为 1080P")
@@ -207,7 +212,7 @@ def normalize_i2v_parameters(model: str, p: dict[str, Any]) -> tuple[dict[str, A
     else:
         allowed = I2V_RESOLUTIONS.get(model)
         if allowed:
-            resolution = str(p.get("resolution") or "").upper()
+            resolution = _auto_text(p.get("resolution")).upper()
             if resolution not in allowed:
                 fixed = I2V_DEFAULT_RESOLUTION[model]
                 notes.append(f"{model} 不支持 {resolution or '空'}，已自动改为 {fixed}")
@@ -251,7 +256,7 @@ def normalize_kf2v_parameters(model: str, p: dict[str, Any]) -> tuple[dict[str, 
         return normalize_i2v_parameters(model, p)
 
     notes: list[str] = []
-    resolution = str(p.get("resolution") or "720P").upper()
+    resolution = (_auto_text(p.get("resolution")) or "720P").upper()
     if model == "wanx2.1-kf2v-plus":
         if resolution != "720P":
             notes.append(f"{model} 仅支持 720P，已改为 720P")
@@ -280,7 +285,7 @@ def normalize_happyhorse_parameters(model: str, p: dict[str, Any], with_ratio: b
     duration = min(15, max(3, _as_int(p.get("duration"), 5)))
     params: dict[str, Any] = {"resolution": resolution, "duration": duration}
     if with_ratio:
-        ratio = str(p.get("ratio") or "16:9")
+        ratio = _auto_text(p.get("ratio")) or "16:9"
         if ratio not in HAPPYHORSE_RATIOS:
             ratio = "16:9"
             notes.append(f"{model} 宽高比已改为 16:9")
@@ -334,7 +339,7 @@ def normalize_reference_parameters(model: str, p: dict[str, Any], has_reference_
 
     else:
         # Wan 2.6 reference-video models use legacy width*height size values.
-        size = str(p.get("size") or "1920*1080").replace(" ", "")
+        size = (_auto_text(p.get("size")) or "1920*1080").replace(" ", "")
         allowed = _allowed_sizes(("720P", "1080P"))
         if size not in allowed:
             notes.append(f"{model} 不支持分辨率 {size}，已改为 1920*1080")

@@ -39,7 +39,7 @@ class WanText2VideoTool(Tool):
                 "X-DashScope-Async": "enable",
             }
 
-            model = tool_parameters.get("model", "wan2.6-t2v").strip()
+            model = tool_parameters.get("model", "wan2.2-t2v-plus").strip()
             prompt = tool_parameters.get("prompt", "").strip()
             if not prompt:
                 msg = "❌ 请输入提示词"

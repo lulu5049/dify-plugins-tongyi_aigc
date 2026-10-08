@@ -11,6 +11,7 @@ from dify_plugin import Tool
 from dify_plugin.entities.tool import ToolInvokeMessage
 
 from tools.bailian_endpoints import native_base_url
+from tools.video_model_compat import is_wan3, normalize_t2v_parameters
 
 logger = logging.getLogger(__name__)
 
@@ -45,6 +46,7 @@ class WanText2VideoTool(Tool):
                 yield self.create_text_message(msg)
                 return
 
+            is_wan30 = is_wan3(model)
             is_wan27 = model.startswith("wan2.7-")
 
             payload: dict[str, Any] = {
@@ -54,7 +56,9 @@ class WanText2VideoTool(Tool):
             }
 
             input_params = payload["input"]
-            if is_wan27:
+            if is_wan30:
+                prompt_limit = 20000
+            elif is_wan27:
                 prompt_limit = 5000
             elif model.startswith("wan2.6-t2v") or model.startswith("wan2.5-t2v"):
                 prompt_limit = 1500
@@ -63,7 +67,7 @@ class WanText2VideoTool(Tool):
             input_params["prompt"] = prompt[:prompt_limit]
 
             negative_prompt = tool_parameters.get("negative_prompt", "")
-            if negative_prompt:
+            if negative_prompt and not is_wan30:
                 input_params["negative_prompt"] = negative_prompt.strip()[:500]
 
             audio_url = tool_parameters.get("audio_url", "")
@@ -76,57 +80,10 @@ class WanText2VideoTool(Tool):
                 if processed_audio:
                     input_params["audio_url"] = processed_audio
 
-            params = payload["parameters"]
-
-            size = tool_parameters.get("size", "")
-            resolution = tool_parameters.get("resolution", "")
-            ratio = tool_parameters.get("ratio", "")
-            if is_wan27:
-                if resolution:
-                    params["resolution"] = str(resolution).strip().upper()
-                if ratio:
-                    params["ratio"] = str(ratio).strip()
-
-                if size and ("resolution" not in params or "ratio" not in params):
-                    mapped_resolution, mapped_ratio = self._map_size_to_wan27(size)
-                    if mapped_resolution and "resolution" not in params:
-                        params["resolution"] = mapped_resolution
-                    if mapped_ratio and "ratio" not in params:
-                        params["ratio"] = mapped_ratio
-            elif size:
-                params["size"] = str(size).strip()
-
-            duration = tool_parameters.get("duration")
-            if duration is not None:
-                try:
-                    params["duration"] = int(duration)
-                except (TypeError, ValueError):
-                    pass
-
-            prompt_extend = tool_parameters.get("prompt_extend")
-            if prompt_extend is not None:
-                params["prompt_extend"] = prompt_extend
-
-            shot_type = tool_parameters.get("shot_type", "")
-            if shot_type and model.startswith("wan2.6-t2v"):
-                params["shot_type"] = shot_type.strip()
-
-            audio = tool_parameters.get("audio")
-            if audio is not None and (
-                model.startswith("wan2.6-t2v") or model.startswith("wan2.5-t2v")
-            ):
-                params["audio"] = audio
-
-            watermark = tool_parameters.get("watermark")
-            if watermark is not None:
-                params["watermark"] = watermark
-
-            seed = tool_parameters.get("seed")
-            if seed is not None:
-                try:
-                    params["seed"] = int(seed)
-                except (TypeError, ValueError):
-                    pass
+            params, compatibility_notes = normalize_t2v_parameters(model, tool_parameters)
+            payload["parameters"] = params
+            for note in compatibility_notes:
+                yield self.create_text_message(f"ℹ️ {note}")
 
             yield self.create_text_message("🚀 文生视频任务启动中...")
             yield self.create_text_message(f"🤖 使用模型: {model}")

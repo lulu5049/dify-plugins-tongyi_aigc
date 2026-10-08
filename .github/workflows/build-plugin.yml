@@ -1,0 +1,62 @@
+name: Build Dify Plugin
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Read plugin metadata
+        id: meta
+        shell: bash
+        run: |
+          set -euo pipefail
+          PLUGIN_NAME="$(awk '/^name:/ {print $2; exit}' manifest.yaml | tr -d '"')"
+          VERSION="$(awk '/^version:/ {print $2; exit}' manifest.yaml | tr -d '"')"
+          if [ -z "$PLUGIN_NAME" ] || [ -z "$VERSION" ]; then
+            echo "Could not read name/version from manifest.yaml"
+            exit 1
+          fi
+          PACKAGE_NAME="${PLUGIN_NAME}-${VERSION}.difypkg"
+          echo "plugin_name=$PLUGIN_NAME" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "package_name=$PACKAGE_NAME" >> "$GITHUB_OUTPUT"
+          echo "Will build $PACKAGE_NAME"
+
+      - name: Download Dify Plugin CLI
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fL \
+            "https://github.com/langgenius/dify-plugin-daemon/releases/download/0.6.10/dify-plugin-linux-amd64" \
+            -o "$RUNNER_TEMP/dify-plugin"
+          echo "0cef74bcae375a4337c2ff7d42e4787717981a795e1c23cf56bb27ec07ec8304  $RUNNER_TEMP/dify-plugin" | sha256sum -c -
+          chmod +x "$RUNNER_TEMP/dify-plugin"
+          "$RUNNER_TEMP/dify-plugin" version || true
+
+      - name: Package plugin
+        shell: bash
+        run: |
+          set -euo pipefail
+          "$RUNNER_TEMP/dify-plugin" plugin package . -o "${{ steps.meta.outputs.package_name }}"
+          test -s "${{ steps.meta.outputs.package_name }}"
+          ls -lh "${{ steps.meta.outputs.package_name }}"
+
+      - name: Upload .difypkg
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.meta.outputs.package_name }}
+          path: ${{ steps.meta.outputs.package_name }}
+          if-no-files-found: error
+          retention-days: 30

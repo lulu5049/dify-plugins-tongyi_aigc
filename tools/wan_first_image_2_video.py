@@ -13,6 +13,7 @@ from dify_plugin.entities.tool import ToolInvokeMessage
 from PIL import Image
 
 from tools.bailian_endpoints import native_base_url
+from tools.video_model_compat import is_wan3, normalize_i2v_parameters
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +27,9 @@ class WanFirstImage2VideoTool(Tool):
 
         try:
             model = tool_parameters.get("model", "wan2.6-i2v").strip()
+            is_wan30 = is_wan3(model)
             is_wan27_i2v = model.startswith("wan2.7-i2v")
+            uses_media_protocol = is_wan30 or is_wan27_i2v
             api_key = self.runtime.credentials.get("api_key")
             if not api_key:
                 msg = "❌ API密钥未配置"
@@ -40,7 +43,7 @@ class WanFirstImage2VideoTool(Tool):
             audio_url = tool_parameters.get("audio_url", "").strip()
 
             payload: dict[str, Any]
-            if is_wan27_i2v:
+            if uses_media_protocol:
                 last_frame_obj = tool_parameters.get("last_frame_input")
                 last_frame_url = tool_parameters.get("last_frame_url")
                 processed_last_frame = self._process_image(
@@ -49,7 +52,12 @@ class WanFirstImage2VideoTool(Tool):
                 first_clip_url = tool_parameters.get("first_clip_url", "").strip()
 
                 media: list[dict[str, str]] = []
-                if first_clip_url:
+                if is_wan30 and first_clip_url:
+                    yield self.create_text_message(
+                        "❌ Wan 3.0 不支持 first_clip 视频续写，请改用 wan2.7-i2v 的视频续写工具。"
+                    )
+                    return
+                if first_clip_url and is_wan27_i2v:
                     media.append({"type": "first_clip", "url": first_clip_url})
                     if processed_last_frame:
                         media.append({"type": "last_frame", "url": processed_last_frame})
@@ -64,7 +72,7 @@ class WanFirstImage2VideoTool(Tool):
                     media.append({"type": "first_frame", "url": processed_img})
                     if processed_last_frame:
                         media.append({"type": "last_frame", "url": processed_last_frame})
-                    if audio_url:
+                    if audio_url and is_wan27_i2v:
                         media.append({"type": "driving_audio", "url": audio_url})
 
                 payload = {
@@ -89,52 +97,31 @@ class WanFirstImage2VideoTool(Tool):
             input_params = payload["input"]
             prompt = tool_parameters.get("prompt", "").strip()
             if prompt:
-                if is_wan27_i2v:
+                if is_wan30:
+                    limit = 20000
+                elif is_wan27_i2v:
                     limit = 5000
                 else:
                     limit = 1500 if "wan2.6" in model or "wan2.5" in model else 800
                 input_params["prompt"] = prompt[:limit]
 
             negative_prompt = tool_parameters.get("negative_prompt", "").strip()
-            if negative_prompt:
+            if negative_prompt and not is_wan30:
                 input_params["negative_prompt"] = negative_prompt[:500]
 
             if audio_url and ("wan2.6" in model or "wan2.5" in model):
                 input_params["audio_url"] = audio_url
 
-            params = payload["parameters"]
-            resolution = tool_parameters.get("resolution", "1080P").strip().upper()
-            if is_wan27_i2v and resolution and resolution not in {"720P", "1080P"}:
-                yield self.create_text_message(
-                    "ℹ️ wan2.7-i2v 仅支持 720P/1080P，已自动回退为 1080P。"
-                )
-                resolution = "1080P"
-            if resolution:
-                params["resolution"] = resolution
-            duration = tool_parameters.get("duration", "5")
-            if duration:
-                try:
-                    params["duration"] = int(duration)
-                except (TypeError, ValueError):
-                    pass
-            if tool_parameters.get("prompt_extend") is not None:
-                params["prompt_extend"] = tool_parameters.get("prompt_extend")
+            params, compatibility_notes = normalize_i2v_parameters(model, tool_parameters)
+            payload["parameters"] = params
+            for note in compatibility_notes:
+                yield self.create_text_message(f"ℹ️ {note}")
+
             template = tool_parameters.get("template", "").strip()
-            if template and not is_wan27_i2v:
+            if template and not uses_media_protocol:
                 params["template"] = template
-            if tool_parameters.get("watermark") is not None:
-                params["watermark"] = tool_parameters.get("watermark")
-            if tool_parameters.get("seed") is not None:
-                try:
-                    params["seed"] = int(tool_parameters.get("seed"))
-                except (TypeError, ValueError):
-                    pass
-            shot_type = tool_parameters.get("shot_type", "").strip()
-            if "wan2.6" in model and shot_type and not is_wan27_i2v:
-                params["shot_type"] = shot_type
-            if ("wan2.6" in model or "wan2.5" in model) and not is_wan27_i2v:
-                if tool_parameters.get("audio") is not None and not audio_url:
-                    params["audio"] = tool_parameters.get("audio")
+            elif template and uses_media_protocol:
+                yield self.create_text_message(f"ℹ️ {model} 不使用 template 参数，已忽略。")
 
             api_url = f"{native_base_url(self.runtime.credentials)}/services/aigc/video-generation/video-synthesis"
             headers = {

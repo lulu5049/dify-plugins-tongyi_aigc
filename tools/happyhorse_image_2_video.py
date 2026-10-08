@@ -11,6 +11,7 @@ from dify_plugin.entities.tool import ToolInvokeMessage
 from PIL import Image
 
 from tools.bailian_endpoints import native_base_url
+from tools.bailian_task_waiter import maybe_wait_for_video
 from tools.video_model_compat import normalize_happyhorse_parameters
 
 logger = logging.getLogger(__name__)
@@ -137,6 +138,15 @@ class HappyHorseImage2VideoTool(Tool):
                 )
                 yield self.create_text_message(f"Request ID: {request_id}")
                 yield self.create_json_message(result_data)
+                return
+
+            handled = yield from maybe_wait_for_video(
+                self,
+                self.runtime.credentials,
+                result_data,
+                tool_parameters,
+            )
+            if handled:
                 return
 
             yield self.create_text_message(

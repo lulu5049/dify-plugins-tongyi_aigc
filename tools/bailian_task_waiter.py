@@ -131,3 +131,59 @@ def emit_final_video_result(
         f"Error Message: {error_message}"
     )
     yield tool.create_json_message(result_data)
+
+
+def _parse_bool(value: Any, default: bool = True) -> bool:
+    if value is None:
+        return default
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, (int, float)):
+        return bool(value)
+    text = str(value).strip().lower()
+    if text in {"true", "1", "yes", "y", "on"}:
+        return True
+    if text in {"false", "0", "no", "n", "off"}:
+        return False
+    return default
+
+
+def maybe_wait_for_video(
+    tool: Any,
+    credentials: dict[str, Any],
+    submit_response: dict[str, Any],
+    tool_parameters: dict[str, Any],
+) -> Generator[ToolInvokeMessage, None, bool]:
+    """Wait for a submitted video task when wait_for_completion is enabled.
+
+    Returns True when this helper handled the response (waited, timed out, or
+    emitted a terminal result). Returns False for legacy asynchronous behavior.
+    """
+    if not _parse_bool(tool_parameters.get("wait_for_completion"), True):
+        return False
+
+    output = submit_response.get("output", {}) or {}
+    task_id = str(output.get("task_id") or "").strip()
+    if not task_id:
+        return False
+
+    try:
+        max_wait = int(tool_parameters.get("max_wait_seconds") or 540)
+    except (TypeError, ValueError):
+        max_wait = 540
+    max_wait = max(30, min(max_wait, 900))
+
+    yield tool.create_text_message(
+        f"✅ 任务已提交，Task ID: {task_id}。现在由插件自动等待最终结果..."
+    )
+    final_data = yield from wait_for_bailian_task(
+        tool,
+        credentials,
+        task_id,
+        poll_interval_seconds=10,
+        max_wait_seconds=max_wait,
+        heartbeat_seconds=30,
+    )
+    if final_data is not None:
+        yield from emit_final_video_result(tool, final_data)
+    return True

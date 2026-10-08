@@ -45,6 +45,46 @@ jobs:
           chmod +x "$RUNNER_TEMP/dify-plugin"
           "$RUNNER_TEMP/dify-plugin" version || true
 
+      - name: Validate Python syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m compileall -q tools provider main.py
+
+      - name: Runtime import smoke test
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m venv "$RUNNER_TEMP/plugin-venv"
+          source "$RUNNER_TEMP/plugin-venv/bin/activate"
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          python - <<'PY'
+          import importlib
+          import pathlib
+          import sys
+
+          sys.path.insert(0, ".")
+          modules = []
+          for root in ("tools", "provider"):
+              for path in pathlib.Path(root).glob("*.py"):
+                  if path.name.startswith("__"):
+                      continue
+                  modules.append(".".join(path.with_suffix("").parts))
+
+          failures = []
+          for module in sorted(modules):
+              try:
+                  importlib.import_module(module)
+                  print(f"OK {module}")
+              except Exception as exc:
+                  failures.append((module, repr(exc)))
+                  print(f"FAIL {module}: {exc!r}")
+
+          if failures:
+              raise SystemExit(f"Runtime import failures: {failures}")
+          PY
+
       - name: Package plugin
         shell: bash
         run: |

@@ -58,9 +58,6 @@ class HappyHorseText2VideoTool(Tool):
             for note in compatibility_notes:
                 yield self.create_text_message(f"ℹ️ {note}")
 
-            yield self.create_text_message(msg)
-                    return
-
             yield self.create_text_message(
                 "🚀 HappyHorse文生视频任务启动中...\n"
                 f"🤖 使用模型: {model}\n"

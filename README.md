@@ -10,7 +10,6 @@ A powerful Dify plugin providing comprehensive AI-powered image and video genera
 - **Python Version**: 3.12
 
 ### Version History
-- **v0.0.5** (2026-10-08):
   - Added Wan 3.0 All-in-One video models: `wan3.0-video` and `wan3.0-video-prime`
   - Added model-aware resolution, ratio, duration, audio and seed validation across Wan video tools
   - Added missing `wan2.6-i2v-flash` and `wanx2.1-kf2v-plus`
@@ -249,7 +248,7 @@ Query image translation task status and results.
 #### 1. Wan Text to Image
 Generate images from text descriptions.
 - **Parameters**:
-  - `model`: Model version (default: wan2.7-image-pro)
+  - `model`: Model version (default: wan2.7-image)
   - `prompt`: Text description of the image (required, wan2.7 <=5000 chars, wan2.6 <=2100 chars)
   - `negative_prompt`: Describe what you don't want (<=500 chars, wan2.6 compatibility)
   - `size`: Image size (default: 2K, supports 1K/2K/4K or specific resolutions like 1024*1024)
@@ -263,7 +262,7 @@ Generate images from text descriptions.
 #### 2. Wan Image to Image
 Generate images from text and reference images.
 - **Parameters**:
-  - `model`: Model version (default: wan2.7-image-pro)
+  - `model`: Model version (default: wan2.7-image)
   - `prompt`: Text description (required, <=5000 chars)
   - `images`: Reference image files (1-9 images, required)
   - `size`: Image size (default: 2K)
@@ -277,7 +276,7 @@ Generate images from text and reference images.
 Generate images using Qwen models.
 - **Parameters**:
   - `prompt`: Text description (required)
-  - `model`: Model version (default: qwen-image-2.0-pro)
+  - `model`: Model version (default: qwen-image-3.0)
   - `size`: Image size (default: 1664*928)
   - `negative_prompt`: Describe what you don't want
   - `prompt_extend`: Enable prompt intelligent rewriting
@@ -289,7 +288,7 @@ Generate images from text and reference images using Qwen models.
 - **Parameters**:
   - `prompt`: Text description (required)
   - `images`: Reference image files (1-3 images, required)
-  - `model`: Model version (default: qwen-image-2.0-pro)
+  - `model`: Model version (default: qwen-image-3.0)
   - `size`: Image size (default: 1024*1024)
   - `n`: Number of images to generate (1-6, default: 3)
   - `prompt_extend`: Enable prompt intelligent rewriting
@@ -320,7 +319,7 @@ Translate text in images.
 #### 7. Text to Video
 Generate videos from text descriptions.
 - **Parameters**:
-  - `model`: Model version (default: wan2.6-t2v)
+  - `model`: Model version (default: wan2.2-t2v-plus)
   - `prompt`: Text description (required)
   - `negative_prompt`: Describe what you don't want
   - `size`: Video resolution (default: 1920*1080)
@@ -335,7 +334,7 @@ Generate videos from text descriptions.
 #### 8. Image to Video
 Generate video from an image or continue from a video clip.
 - **Parameters**:
-  - `model`: Model version (default: wan2.6-i2v, supports wan2.7-i2v)
+  - `model`: Model version (default: wan2.2-i2v-flash; supports Wan 3.0/2.7/2.6/2.5/2.2/2.1)
   - `prompt`: Text description
   - `image_input` / `img_url`: First frame image input
   - `last_frame_input` / `last_frame_url`: Optional last frame image (wan2.7-i2v)
@@ -364,7 +363,7 @@ Generate video from first and last frame images.
 #### 10. Reference Video
 Generate videos based on reference video style.
 - **Parameters**:
-  - `model`: Model version (default: wan2.7-r2v)
+  - `model`: Model version (default: wan2.6-r2v-flash)
   - `prompt`: Text description (required, wan2.7 max 5000 / wan2.6 max 1500)
   - `reference_urls`: Reference URLs (videos or images, semicolon-separated, max 5)
   - `first_frame_image`: Optional first frame image URL (wan2.7-r2v)
@@ -391,7 +390,7 @@ Query image translation task status.
 #### 13. HappyHorse Text to Video
 Generate videos from text using HappyHorse model.
 - **Parameters**:
-  - `model`: Model version (default: happyhorse-1.0-t2v)
+  - `model`: Model version (default: happyhorse-1.1-t2v)
   - `prompt`: Text description for video generation (required)
   - `resolution`: Video resolution - 720P or 1080P (default: 1080P)
   - `ratio`: Aspect ratio - 16:9, 9:16, 1:1, 4:3, 3:4 (default: 16:9)
@@ -402,7 +401,7 @@ Generate videos from text using HappyHorse model.
 #### 14. HappyHorse Image to Video - First Frame
 Generate videos from images using HappyHorse model.
 - **Parameters**:
-  - `model`: Model version (default: happyhorse-1.0-i2v)
+  - `model`: Model version (default: happyhorse-1.1-i2v)
   - `prompt`: Text description for video generation (optional)
   - `image_input`: First frame image file (optional)
   - `resolution`: Video resolution - 720P or 1080P (default: 1080P)
@@ -413,7 +412,7 @@ Generate videos from images using HappyHorse model.
 #### 15. HappyHorse Reference Video
 Generate videos from multiple reference images using HappyHorse model.
 - **Parameters**:
-  - `model`: Model version (default: happyhorse-1.0-r2v)
+  - `model`: Model version (default: happyhorse-1.1-r2v)
   - `prompt`: Text description for video generation (required)
   - `files`: Reference image files (1-9 images, required)
   - `resolution`: Video resolution - 720P or 1080P (default: 1080P)

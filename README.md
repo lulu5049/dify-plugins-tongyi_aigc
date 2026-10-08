@@ -4,13 +4,13 @@ A powerful Dify plugin providing comprehensive AI-powered image and video genera
 
 ## Version Information
 
-- **Current Version**: v0.0.6
+- **Current Version**: v0.0.5
 - **Release Date**: 2026-10-08
 - **Compatibility**: Dify Plugin Framework
 - **Python Version**: 3.12
 
 ### Version History
-- **v0.0.6** (2026-10-08):
+- **v0.0.5** (2026-10-08):
   - Added Wan 3.0 All-in-One video models: `wan3.0-video` and `wan3.0-video-prime`
   - Added model-aware resolution, ratio, duration, audio and seed validation across Wan video tools
   - Added missing `wan2.6-i2v-flash` and `wanx2.1-kf2v-plus`

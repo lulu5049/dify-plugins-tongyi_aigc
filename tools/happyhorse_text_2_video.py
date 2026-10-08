@@ -35,7 +35,7 @@ class HappyHorseText2VideoTool(Tool):
                 "X-DashScope-Async": "enable",
             }
 
-            model = tool_parameters.get("model", "happyhorse-1.0-t2v").strip()
+            model = tool_parameters.get("model", "happyhorse-1.1-t2v").strip()
             prompt = tool_parameters.get("prompt", "").strip()
             if not prompt:
                 msg = "❌ 请输入提示词"

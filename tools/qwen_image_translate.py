@@ -163,8 +163,7 @@ class QwenImageTranslateTool(Tool):
             logger.exception(error_msg)
             yield self.create_text_message(error_msg)
 
-    @staticmethod
-    def _check_task_status(task_id: str, api_key: str) -> dict[str, Any] | None:
+    def _check_task_status(self, task_id: str, api_key: str) -> dict[str, Any] | None:
         max_attempts = 30
         attempt = 0
         api_url = f"{native_base_url(self.runtime.credentials)}/tasks/{task_id}"

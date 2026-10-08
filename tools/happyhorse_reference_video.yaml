@@ -112,7 +112,8 @@ parameters:
       - value: "1:1"
         label:
           en_US: "1:1"
-          zh_Hans: "1:1"      - value: "4:5"
+          zh_Hans: "1:1"
+      - value: "4:5"
         label:
           en_US: "4:5"
           zh_Hans: "4:5"

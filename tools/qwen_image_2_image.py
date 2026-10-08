@@ -16,10 +16,15 @@ from tools.bailian_endpoints import native_base_url
 
 logger = logging.getLogger(__name__)
 
-QWEN_IMAGE_2_SERIES_MODELS = {
+QWEN_IMAGE_FLEXIBLE_MODELS = {
+    "qwen-image-3.0",
+    "qwen-image-3.0-pro",
+    "qwen-image-2.1-pro",
     "qwen-image-2.0",
     "qwen-image-2.0-2026-03-03",
     "qwen-image-2.0-pro",
+    "qwen-image-2.0-pro-2026-06-22",
+    "qwen-image-2.0-pro-2026-04-22",
     "qwen-image-2.0-pro-2026-03-03",
 }
 
@@ -60,8 +65,9 @@ class QwenImage2ImageTool(Tool):
                 yield self.create_text_message(msg)
                 return
 
-            if len(prompt) > 800:
-                prompt = prompt[:800]
+            prompt_limit = 18000 if model in {"qwen-image-3.0", "qwen-image-3.0-pro", "qwen-image-2.1-pro"} else 5200
+            if len(prompt) > prompt_limit:
+                prompt = prompt[:prompt_limit]
 
             images = tool_parameters.get("images", [])
             if not images or not isinstance(images, list):
@@ -69,13 +75,14 @@ class QwenImage2ImageTool(Tool):
                 logger.warning(msg)
                 yield self.create_text_message(msg)
                 return
-            if len(images) > 3:
-                msg = "❌ 最多支持3张参考图片"
+            max_images = 10 if tool_parameters.get("model") == "qwen-image-2.1-pro" else 3
+            if len(images) > max_images:
+                msg = f"❌ 当前模型最多支持{max_images}张参考图片"
                 logger.warning(msg)
                 yield self.create_text_message(msg)
                 return
 
-            model = tool_parameters.get("model", "qwen-image-2.0-pro")
+            model = tool_parameters.get("model", "qwen-image-3.0")
             negative_prompt = tool_parameters.get("negative_prompt", "")
             if negative_prompt:
                 negative_prompt = negative_prompt[:500]
@@ -86,7 +93,7 @@ class QwenImage2ImageTool(Tool):
             n = tool_parameters.get("n")
 
             if size and not self._is_size_valid_for_model(model, size):
-                if model in QWEN_IMAGE_2_SERIES_MODELS:
+                if model in QWEN_IMAGE_FLEXIBLE_MODELS:
                     msg = "❌ qwen-image-2.0系列size总像素需在512*512到2048*2048之间"
                 elif model in QWEN_IMAGE_EDIT_MAX_PLUS_MODELS:
                     msg = "❌ qwen-image-edit-max/plus系列size宽高均需在512到2048之间"
@@ -309,7 +316,7 @@ class QwenImage2ImageTool(Tool):
         if width <= 0 or height <= 0:
             return False
 
-        if model in QWEN_IMAGE_2_SERIES_MODELS:
+        if model in QWEN_IMAGE_FLEXIBLE_MODELS:
             pixels = width * height
             return 512 * 512 <= pixels <= 2048 * 2048
 

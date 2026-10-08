@@ -82,38 +82,6 @@ class HappyHorseImage2VideoTool(Tool):
             yield self.create_text_message(msg)
                     return
 
-            watermark = tool_parameters.get("watermark")
-            if watermark is not None:
-                if isinstance(watermark, str):
-                    watermark_lower = watermark.lower()
-                    if watermark_lower in ["true", "1", "yes"]:
-                        params["watermark"] = True
-                    elif watermark_lower in ["false", "0", "no"]:
-                        params["watermark"] = False
-                    else:
-                        msg = f"❌ 无效的 watermark 参数: {watermark}，必须是布尔值"
-                        logger.error(msg)
-                        yield self.create_text_message(msg)
-                        return
-                else:
-                    try:
-                        params["watermark"] = bool(watermark)
-                    except (TypeError, ValueError):
-                        msg = f"❌ 无效的 watermark 参数: {watermark}，必须是布尔值"
-                        logger.error(msg)
-                        yield self.create_text_message(msg)
-                        return
-
-            seed = tool_parameters.get("seed")
-            if seed is not None:
-                try:
-                    params["seed"] = int(seed)
-                except (TypeError, ValueError):
-                    msg = f"❌ 无效的 seed 参数: {seed}，必须是整数"
-                    logger.error(msg)
-                    yield self.create_text_message(msg)
-                    return
-
             # Consolidate init message
             init_msg = (
                 "🚀 HappyHorse图生视频任务启动中...\n"

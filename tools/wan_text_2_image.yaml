@@ -17,24 +17,45 @@ parameters:
       en_US: Model
       zh_Hans: 模型
     human_description:
-      en_US: "AI model to use for text-to-image generation"
-      zh_Hans: "用于文生图的AI模型"
+      en_US: "Text-to-image model. Default uses the lowest Beijing unit cost."
+      zh_Hans: "文生图模型。默认使用北京区当前最低单价档。"
     llm_description: "AI model for text-to-image generation"
     form: form
-    default: "wan2.7-image-pro"
+    default: "wanx2.0-t2i-turbo"
     options:
-      - value: "wan2.7-image-pro"
+      - value: "wanx2.0-t2i-turbo"
         label:
-          en_US: "Wanxiang 2.7 Image Pro"
-          zh_Hans: "万相2.7 图像专业版"
-      - value: "wan2.7-image"
+          en_US: "Wan 2.0 T2I Turbo (wanx2.0-t2i-turbo) - ¥0.04/image"
+          zh_Hans: "万相2.0文生图Turbo（wanx2.0-t2i-turbo）- ¥0.04/张"
+      - value: "wanx2.1-t2i-turbo"
         label:
-          en_US: "Wanxiang 2.7 Image"
-          zh_Hans: "万相2.7 图像"
+          en_US: "Wan 2.1 T2I Turbo (wanx2.1-t2i-turbo) - ¥0.14/image"
+          zh_Hans: "万相2.1文生图Turbo（wanx2.1-t2i-turbo）- ¥0.14/张"
+      - value: "wan2.2-t2i-flash"
+        label:
+          en_US: "Wan 2.2 T2I Flash (wan2.2-t2i-flash) - ¥0.14/image"
+          zh_Hans: "万相2.2文生图Flash（wan2.2-t2i-flash）- ¥0.14/张"
+      - value: "wan2.2-t2i-plus"
+        label:
+          en_US: "Wan 2.2 T2I Plus (wan2.2-t2i-plus) - ¥0.20/image"
+          zh_Hans: "万相2.2文生图Plus（wan2.2-t2i-plus）- ¥0.20/张"
+      - value: "wan2.5-t2i-preview"
+        label:
+          en_US: "Wan 2.5 T2I Preview (wan2.5-t2i-preview) - ¥0.20/image"
+          zh_Hans: "万相2.5文生图预览（wan2.5-t2i-preview）- ¥0.20/张"
       - value: "wan2.6-t2i"
         label:
-          en_US: "Wanxiang 2.6 Text to Image"
-          zh_Hans: "万相2.6 文生图"
+          en_US: "Wan 2.6 T2I (wan2.6-t2i) - ¥0.20/image"
+          zh_Hans: "万相2.6文生图（wan2.6-t2i）- ¥0.20/张"
+      - value: "wan2.7-image"
+        label:
+          en_US: "Wan 2.7 Image (wan2.7-image) - ¥0.20/image"
+          zh_Hans: "万相2.7图像（wan2.7-image）- ¥0.20/张"
+      - value: "wan2.7-image-pro"
+        label:
+          en_US: "Wan 2.7 Image Pro (wan2.7-image-pro) - ¥0.50/image"
+          zh_Hans: "万相2.7图像Pro（wan2.7-image-pro）- ¥0.50/张"
+
   - name: prompt
     type: string
     required: true
@@ -68,7 +89,7 @@ parameters:
       zh_Hans: "图像尺寸。wan2.7支持1K/2K/4K或宽*高；wan2.6仅支持固定尺寸"
     llm_description: "Image size, such as 2K/1K/4K/1024*1024"
     form: form
-    default: "2K"
+    default: "1024*1024"
     options:
       - value: "1K"
         label:
@@ -133,7 +154,7 @@ parameters:
       zh_Hans: "生成图像数量（1-4；wan2.7组图模式最高12）"
     llm_description: "Number of images (1-4, or up to 12 with wan2.7 sequential mode)"
     form: form
-    default: 3
+    default: 1
     min: 1
     max: 12
   - name: enable_sequential

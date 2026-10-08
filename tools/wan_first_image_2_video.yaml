@@ -21,7 +21,7 @@ parameters:
       zh_Hans: "用于视频生成的AI模型"
     llm_description: "AI model for video generation"
     form: form
-    default: "wan2.6-i2v"
+    default: "wan2.2-i2v-flash"
     options:
       - value: "wan3.0-video-prime"
         label:
@@ -166,27 +166,82 @@ parameters:
   - name: resolution
     type: select
     required: false
-    label:
-      en_US: "Resolution"
-      zh_Hans: "分辨率"
-    human_description:
-      en_US: "Model-aware resolution. Wan 3.0 supports 480P/720P/1080P; older models have their own limits and are auto-corrected."
-      zh_Hans: "按模型自动匹配分辨率。Wan 3.0 支持 480P/720P/1080P；旧模型限制不同，插件会自动纠正。"
-    llm_description: "Video resolution quality for image-to-video generation"
+    label: { en_US: "Resolution", zh_Hans: "分辨率" }
+    human_description: { en_US: "Available resolutions depend on the selected model.", zh_Hans: "可选分辨率会根据模型动态变化。" }
+    llm_description: "Video resolution"
     form: form
+    default: "480P"
     options:
       - value: "480P"
-        label:
-          en_US: "480P"
-          zh_Hans: "480P"
+        label: { en_US: "480P", zh_Hans: "480P" }
+        show_on: [{ variable: model, value: "wan2.2-i2v-flash" }]
       - value: "720P"
-        label:
-          en_US: "720P"
-          zh_Hans: "720P"
+        label: { en_US: "720P", zh_Hans: "720P" }
+        show_on: [{ variable: model, value: "wan2.2-i2v-flash" }]
       - value: "1080P"
-        label:
-          en_US: "1080P"
-          zh_Hans: "1080P"
+        label: { en_US: "1080P", zh_Hans: "1080P" }
+        show_on: [{ variable: model, value: "wan2.2-i2v-flash" }]
+      - value: "480P"
+        label: { en_US: "480P", zh_Hans: "480P" }
+        show_on: [{ variable: model, value: "wan2.2-i2v-plus" }]
+      - value: "1080P"
+        label: { en_US: "1080P", zh_Hans: "1080P" }
+        show_on: [{ variable: model, value: "wan2.2-i2v-plus" }]
+      - value: "480P"
+        label: { en_US: "480P", zh_Hans: "480P" }
+        show_on: [{ variable: model, value: "wanx2.1-i2v-turbo" }]
+      - value: "720P"
+        label: { en_US: "720P", zh_Hans: "720P" }
+        show_on: [{ variable: model, value: "wanx2.1-i2v-turbo" }]
+      - value: "720P"
+        label: { en_US: "720P", zh_Hans: "720P" }
+        show_on: [{ variable: model, value: "wanx2.1-i2v-plus" }]
+      - value: "480P"
+        label: { en_US: "480P", zh_Hans: "480P" }
+        show_on: [{ variable: model, value: "wan2.5-i2v-preview" }]
+      - value: "720P"
+        label: { en_US: "720P", zh_Hans: "720P" }
+        show_on: [{ variable: model, value: "wan2.5-i2v-preview" }]
+      - value: "1080P"
+        label: { en_US: "1080P", zh_Hans: "1080P" }
+        show_on: [{ variable: model, value: "wan2.5-i2v-preview" }]
+      - value: "720P"
+        label: { en_US: "720P", zh_Hans: "720P" }
+        show_on: [{ variable: model, value: "wan2.6-i2v-flash" }]
+      - value: "1080P"
+        label: { en_US: "1080P", zh_Hans: "1080P" }
+        show_on: [{ variable: model, value: "wan2.6-i2v-flash" }]
+      - value: "720P"
+        label: { en_US: "720P", zh_Hans: "720P" }
+        show_on: [{ variable: model, value: "wan2.6-i2v" }]
+      - value: "1080P"
+        label: { en_US: "1080P", zh_Hans: "1080P" }
+        show_on: [{ variable: model, value: "wan2.6-i2v" }]
+      - value: "720P"
+        label: { en_US: "720P", zh_Hans: "720P" }
+        show_on: [{ variable: model, value: "wan2.7-i2v" }]
+      - value: "1080P"
+        label: { en_US: "1080P", zh_Hans: "1080P" }
+        show_on: [{ variable: model, value: "wan2.7-i2v" }]
+      - value: "480P"
+        label: { en_US: "480P", zh_Hans: "480P" }
+        show_on: [{ variable: model, value: "wan3.0-video" }]
+      - value: "720P"
+        label: { en_US: "720P", zh_Hans: "720P" }
+        show_on: [{ variable: model, value: "wan3.0-video" }]
+      - value: "1080P"
+        label: { en_US: "1080P", zh_Hans: "1080P" }
+        show_on: [{ variable: model, value: "wan3.0-video" }]
+      - value: "480P"
+        label: { en_US: "480P", zh_Hans: "480P" }
+        show_on: [{ variable: model, value: "wan3.0-video-prime" }]
+      - value: "720P"
+        label: { en_US: "720P", zh_Hans: "720P" }
+        show_on: [{ variable: model, value: "wan3.0-video-prime" }]
+      - value: "1080P"
+        label: { en_US: "1080P", zh_Hans: "1080P" }
+        show_on: [{ variable: model, value: "wan3.0-video-prime" }]
+
   - name: ratio
     type: select
     required: false
@@ -228,17 +283,84 @@ parameters:
           en_US: "9:16"
           zh_Hans: "9:16"
   - name: duration
-    type: string
+    type: select
     required: false
-    label:
-      en_US: "Duration (seconds)"
-      zh_Hans: "时长(秒)"
-    human_description:
-      en_US: "Duration of the generated video in seconds. wan2.6-i2v-flash: integer between [2, 15], default 5. wan2.6-i2v: integer between [2, 15], default 5. wan2.6-i2v-us: 5, 10 or 15, default 5. wan2.5-i2v-preview: 5 or 10, default 5. wan2.2-i2v-plus: fixed at 5 seconds, not modifiable. wan2.2-i2v-flash: fixed at 5 seconds, not modifiable. wanx2.1-i2v-plus: fixed at 5 seconds, not modifiable. wanx2.1-i2v-turbo: 3, 4 or 5, default 5."
-      zh_Hans: "生成视频的时长（秒）。wan2.6-i2v-flash：取值为[2, 15]之间的整数，默认值为5。wan2.6-i2v：取值为[2, 15]之间的整数，默认值为5。wan2.6-i2v-us：可选值为5、10、15，默认值为5。wan2.5-i2v-preview：可选值为5、10，默认值为5。wan2.2-i2v-plus：固定为5秒，且不支持修改。wan2.2-i2v-flash：固定为5秒，且不支持修改。wanx2.1-i2v-plus：固定为5秒，且不支持修改。wanx2.1-i2v-turbo：可选值为3、4或5，默认值为5。"
-    llm_description: "Duration of the generated video in seconds"
+    label: { en_US: "Duration (seconds)", zh_Hans: "时长（秒）" }
+    human_description: { en_US: "Duration options depend on the selected model.", zh_Hans: "可选时长会根据模型动态变化。" }
+    llm_description: "Video duration"
     form: form
     default: "5"
+    options:
+      - value: "5"
+        label: { en_US: "5s", zh_Hans: "5秒" }
+        show_on: [{ variable: model, value: "wan2.2-i2v-flash" }]
+      - value: "5"
+        label: { en_US: "5s", zh_Hans: "5秒" }
+        show_on: [{ variable: model, value: "wan2.2-i2v-plus" }]
+      - value: "3"
+        label: { en_US: "3s", zh_Hans: "3秒" }
+        show_on: [{ variable: model, value: "wanx2.1-i2v-turbo" }]
+      - value: "4"
+        label: { en_US: "4s", zh_Hans: "4秒" }
+        show_on: [{ variable: model, value: "wanx2.1-i2v-turbo" }]
+      - value: "5"
+        label: { en_US: "5s", zh_Hans: "5秒" }
+        show_on: [{ variable: model, value: "wanx2.1-i2v-turbo" }]
+      - value: "5"
+        label: { en_US: "5s", zh_Hans: "5秒" }
+        show_on: [{ variable: model, value: "wanx2.1-i2v-plus" }]
+      - value: "5"
+        label: { en_US: "5s", zh_Hans: "5秒" }
+        show_on: [{ variable: model, value: "wan2.5-i2v-preview" }]
+      - value: "10"
+        label: { en_US: "10s", zh_Hans: "10秒" }
+        show_on: [{ variable: model, value: "wan2.5-i2v-preview" }]
+      - value: "2"
+        label: { en_US: "2s", zh_Hans: "2秒" }
+        show_on: [{ variable: model, value: "wan2.6-i2v-flash" }]
+      - value: "5"
+        label: { en_US: "5s", zh_Hans: "5秒" }
+        show_on: [{ variable: model, value: "wan2.6-i2v-flash" }]
+      - value: "15"
+        label: { en_US: "15s", zh_Hans: "15秒" }
+        show_on: [{ variable: model, value: "wan2.6-i2v-flash" }]
+      - value: "2"
+        label: { en_US: "2s", zh_Hans: "2秒" }
+        show_on: [{ variable: model, value: "wan2.6-i2v" }]
+      - value: "5"
+        label: { en_US: "5s", zh_Hans: "5秒" }
+        show_on: [{ variable: model, value: "wan2.6-i2v" }]
+      - value: "15"
+        label: { en_US: "15s", zh_Hans: "15秒" }
+        show_on: [{ variable: model, value: "wan2.6-i2v" }]
+      - value: "2"
+        label: { en_US: "2s", zh_Hans: "2秒" }
+        show_on: [{ variable: model, value: "wan2.7-i2v" }]
+      - value: "5"
+        label: { en_US: "5s", zh_Hans: "5秒" }
+        show_on: [{ variable: model, value: "wan2.7-i2v" }]
+      - value: "15"
+        label: { en_US: "15s", zh_Hans: "15秒" }
+        show_on: [{ variable: model, value: "wan2.7-i2v" }]
+      - value: "2"
+        label: { en_US: "2s", zh_Hans: "2秒" }
+        show_on: [{ variable: model, value: "wan3.0-video" }]
+      - value: "5"
+        label: { en_US: "5s", zh_Hans: "5秒" }
+        show_on: [{ variable: model, value: "wan3.0-video" }]
+      - value: "30"
+        label: { en_US: "30s", zh_Hans: "30秒" }
+        show_on: [{ variable: model, value: "wan3.0-video" }]
+      - value: "2"
+        label: { en_US: "2s", zh_Hans: "2秒" }
+        show_on: [{ variable: model, value: "wan3.0-video-prime" }]
+      - value: "5"
+        label: { en_US: "5s", zh_Hans: "5秒" }
+        show_on: [{ variable: model, value: "wan3.0-video-prime" }]
+      - value: "30"
+        label: { en_US: "30s", zh_Hans: "30秒" }
+        show_on: [{ variable: model, value: "wan3.0-video-prime" }]
+
   - name: prompt_extend
     type: boolean
     required: false
@@ -250,7 +372,7 @@ parameters:
       zh_Hans: "启用提示词智能改写"
     llm_description: "Whether to enable prompt intelligent rewriting"
     form: form
-    default: true
+    default: false
   - name: shot_type
     type: select
     required: false
@@ -283,7 +405,7 @@ parameters:
       zh_Hans: "为生成的视频自动添加音频"
     llm_description: "Whether to automatically add audio"
     form: form
-    default: true
+    default: false
   - name: watermark
     type: boolean
     required: false
@@ -295,7 +417,7 @@ parameters:
       zh_Hans: "在视频中添加水印"
     llm_description: "Whether to add watermark"
     form: form
-    default: true
+    default: false
   - name: seed
     type: number
     required: false

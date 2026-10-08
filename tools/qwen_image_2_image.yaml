@@ -174,52 +174,45 @@ parameters:
       en_US: Model Version
       zh_Hans: 模型版本
     human_description:
-      en_US: "Choose the Qwen image edit model version"
-      zh_Hans: "选择要使用的Qwen图像编辑模型"
-    llm_description: "Choose the Qwen image edit model version"
+      en_US: "Choose the Qwen image editing model."
+      zh_Hans: "选择千问图像编辑模型。"
+    llm_description: "Choose the Qwen image editing model"
     form: form
-    default: "qwen-image-2.0-pro"
+    default: "qwen-image-3.0"
     options:
-      - value: "qwen-image-2.0-pro"
+      - value: "qwen-image-3.0"
         label:
-          en_US: "Qwen Image 2.0 Pro"
-          zh_Hans: "Qwen Image 2.0 Pro"
-      - value: "qwen-image-2.0-pro-2026-03-03"
+          en_US: "Qwen Image 3.0 (qwen-image-3.0) - ¥0.18 output + ¥0.02/input image"
+          zh_Hans: "千问图像3.0（qwen-image-3.0）- 输出¥0.18 + 输入图¥0.02/张"
+      - value: "qwen-image-3.0-pro"
         label:
-          en_US: "Qwen Image 2.0 Pro 2026-03-03"
-          zh_Hans: "Qwen Image 2.0 Pro 2026-03-03"
+          en_US: "Qwen Image 3.0 Pro (qwen-image-3.0-pro)"
+          zh_Hans: "千问图像3.0 Pro（qwen-image-3.0-pro）"
+      - value: "qwen-image-2.1-pro"
+        label:
+          en_US: "Qwen Image 2.1 Pro (qwen-image-2.1-pro)"
+          zh_Hans: "千问图像2.1 Pro（qwen-image-2.1-pro）"
       - value: "qwen-image-2.0"
         label:
-          en_US: "Qwen Image 2.0"
-          zh_Hans: "Qwen Image 2.0"
-      - value: "qwen-image-2.0-2026-03-03"
+          en_US: "Qwen Image 2.0 (qwen-image-2.0) - ¥0.20/image"
+          zh_Hans: "千问图像2.0（qwen-image-2.0）- ¥0.20/张"
+      - value: "qwen-image-2.0-pro"
         label:
-          en_US: "Qwen Image 2.0 2026-03-03"
-          zh_Hans: "Qwen Image 2.0 2026-03-03"
-      - value: "qwen-image-edit-max"
-        label:
-          en_US: "Qwen Image Edit Max"
-          zh_Hans: "Qwen Image Edit Max"
-      - value: "qwen-image-edit-max-2026-01-16"
-        label:
-          en_US: "Qwen Image Edit Max 2026-01-16"
-          zh_Hans: "Qwen Image Edit Max 2026-01-16"
+          en_US: "Qwen Image 2.0 Pro (qwen-image-2.0-pro) - ¥0.50/image"
+          zh_Hans: "千问图像2.0 Pro（qwen-image-2.0-pro）- ¥0.50/张"
       - value: "qwen-image-edit-plus"
         label:
-          en_US: "Qwen Image Edit Plus"
-          zh_Hans: "Qwen Image Edit Plus"
-      - value: "qwen-image-edit-plus-2025-12-15"
+          en_US: "Qwen Image Edit Plus (qwen-image-edit-plus) - ¥0.20/image"
+          zh_Hans: "千问图像编辑Plus（qwen-image-edit-plus）- ¥0.20/张"
+      - value: "qwen-image-edit-max"
         label:
-          en_US: "Qwen Image Edit Plus 2025-12-15"
-          zh_Hans: "Qwen Image Edit Plus 2025-12-15"
-      - value: "qwen-image-edit-plus-2025-10-30"
-        label:
-          en_US: "Qwen Image Edit Plus 2025-10-30"
-          zh_Hans: "Qwen Image Edit Plus 2025-10-30"
+          en_US: "Qwen Image Edit Max (qwen-image-edit-max) - ¥0.50/image"
+          zh_Hans: "千问图像编辑Max（qwen-image-edit-max）- ¥0.50/张"
       - value: "qwen-image-edit"
         label:
-          en_US: "Qwen Image Edit"
-          zh_Hans: "Qwen Image Edit"
+          en_US: "Qwen Image Edit (qwen-image-edit) - ¥0.30/image"
+          zh_Hans: "千问图像编辑（qwen-image-edit）- ¥0.30/张"
+
 extra:
   python:
     source: tools/qwen_image_2_image.py

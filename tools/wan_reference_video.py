@@ -45,9 +45,9 @@ class WanReferenceVideoTool(Tool):
                 for url in reference_urls_str.split(";")
                 if url.strip()
             ]
-            if len(reference_urls) > (10 if is_wan30 else 5):
+            if len(reference_urls) > (15 if is_wan30 else 5):
                 yield self.create_text_message(
-                    "❌ Wan 3.0 最多支持10张参考图；Wan 2.7/2.6 此工具最多支持5个参考素材。"
+                    "❌ Wan 3.0 最多支持10张参考图 + 5段参考视频；Wan 2.7/2.6 此工具最多支持5个参考素材。"
                 )
                 return
 

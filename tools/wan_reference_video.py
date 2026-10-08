@@ -25,7 +25,7 @@ class WanReferenceVideoTool(Tool):
         logger.info("Starting wan reference-to-video task")
 
         try:
-            model = tool_parameters.get("model", "wan2.6-r2v").strip()
+            model = tool_parameters.get("model", "wan2.6-r2v-flash").strip()
             is_wan30 = is_wan3(model)
             is_wan27 = model.startswith("wan2.7-")
             uses_media_protocol = is_wan30 or is_wan27

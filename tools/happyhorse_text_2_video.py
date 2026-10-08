@@ -60,20 +60,6 @@ class HappyHorseText2VideoTool(Tool):
 
             yield self.create_text_message(msg)
                     return
-            
-            watermark = tool_parameters.get("watermark")
-            if watermark is not None:
-                params["watermark"] = watermark
-
-            seed = tool_parameters.get("seed")
-            if seed is not None:
-                try:
-                    params["seed"] = int(seed)
-                except (TypeError, ValueError):
-                    msg = f"❌ 无效的 seed 参数: {seed}"
-                    logger.error(msg)
-                    yield self.create_text_message(msg)
-                    return
 
             yield self.create_text_message(
                 "🚀 HappyHorse文生视频任务启动中...\n"

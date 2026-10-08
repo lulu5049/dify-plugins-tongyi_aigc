@@ -79,9 +79,6 @@ class HappyHorseImage2VideoTool(Tool):
             for note in compatibility_notes:
                 yield self.create_text_message(f"ℹ️ {note}")
 
-            yield self.create_text_message(msg)
-                    return
-
             # Consolidate init message
             init_msg = (
                 "🚀 HappyHorse图生视频任务启动中...\n"

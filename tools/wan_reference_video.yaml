@@ -109,7 +109,6 @@ parameters:
       zh_Hans: "视频分辨率（宽*高）。用于 wan2.6，也可作为 wan2.7 的兼容映射输入。"
     llm_description: "Video resolution in width*height format"
     form: form
-    default: "AUTO"
     options:
       - value: "1280*720"
         label:
@@ -176,12 +175,7 @@ parameters:
       zh_Hans: "wan2.7-r2v 的分辨率档位"
     llm_description: "Resolution tier for wan2.7-r2v"
     form: form
-    default: "AUTO"
     options:
-      - value: "AUTO"
-        label:
-          en_US: "AUTO - Use model default"
-          zh_Hans: "AUTO - 按模型自动选择"
       - value: "480P"
         label:
           en_US: "480P (Wan 3.0)"
@@ -205,12 +199,7 @@ parameters:
       zh_Hans: "wan2.7-r2v 的宽高比"
     llm_description: "Aspect ratio for wan2.7-r2v"
     form: form
-    default: "AUTO"
     options:
-      - value: "AUTO"
-        label:
-          en_US: "AUTO - Use model default"
-          zh_Hans: "AUTO - 按模型自动选择"
       - value: "adaptive"
         label:
           en_US: "Adaptive (Wan 3.0)"
@@ -308,32 +297,6 @@ parameters:
     llm_description: "Random seed for reproducible results"
     form: form
     default: 0
-  - name: wait_for_completion
-    type: boolean
-    required: false
-    label:
-      en_US: "Wait Until Completed"
-      zh_Hans: "等待生成完成"
-    human_description:
-      en_US: "Keep this Dify node running and poll Bailian until the video succeeds or fails."
-      zh_Hans: "保持当前 Dify 节点运行，持续查询百炼，直到视频成功或失败。"
-    llm_description: "Whether to wait for the asynchronous Bailian task to finish"
-    form: form
-    default: true
-  - name: max_wait_seconds
-    type: number
-    required: false
-    label:
-      en_US: "Maximum Wait (seconds)"
-      zh_Hans: "最大等待时间（秒）"
-    human_description:
-      en_US: "Maximum time to wait inside this node before returning the task ID for later querying."
-      zh_Hans: "本节点内部最长等待时间；超时后会返回 Task ID，之后仍可用视频结果查询继续查询。"
-    llm_description: "Maximum number of seconds to wait for task completion"
-    form: form
-    default: 540
-    min: 30
-    max: 900
 extra:
   python:
     source: tools/wan_reference_video.py

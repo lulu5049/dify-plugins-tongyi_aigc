@@ -25,12 +25,12 @@ parameters:
     options:
       - value: "happyhorse-1.1-i2v"
         label:
-          en_US: "HappyHorse 1.1 Image to Video"
-          zh_Hans: "HappyHorse 1.1 图生视频"
+          en_US: "HappyHorse 1.1 Image to Video (happyhorse-1.1-i2v)"
+          zh_Hans: "HappyHorse 1.1 图生视频（happyhorse-1.1-i2v）"
       - value: "happyhorse-1.0-i2v"
         label:
-          en_US: "HappyHorse 1.0 Image to Video"
-          zh_Hans: "HappyHorse 1.0 图生视频"
+          en_US: "HappyHorse 1.0 Image to Video (happyhorse-1.0-i2v)"
+          zh_Hans: "HappyHorse 1.0 图生视频（happyhorse-1.0-i2v）"
   - name: prompt
     type: string
     required: false
@@ -66,6 +66,10 @@ parameters:
     form: form
     default: "1080P"
     options:
+      - value: "480P"
+        label:
+          en_US: "480P (HappyHorse 1.1 only)"
+          zh_Hans: "480P（仅 HappyHorse 1.1）"
       - value: "720P"
         label:
           en_US: "720P"

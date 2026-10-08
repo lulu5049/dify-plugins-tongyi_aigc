@@ -32,8 +32,12 @@ parameters:
       zh_Hans: "生成图像的尺寸"
     llm_description: "Size of the generated image"
     form: form
-    default: "2048*2048"
+    default: "1024*1024"
     options:
+      - value: "1024*1024"
+        label:
+          en_US: "1:1 (1024*1024, economical 1K)"
+          zh_Hans: "1:1（1024*1024，经济1K档）"
       - value: "2048*2048"
         label:
           en_US: "1:1 (2048*2048, 2.0 default)"
@@ -119,7 +123,7 @@ parameters:
       zh_Hans: "是否在图像上添加水印"
     llm_description: "Whether to add watermark"
     form: form
-    default: true
+    default: false
   - name: seed
     type: number
     required: false
@@ -138,48 +142,45 @@ parameters:
       en_US: Model Version
       zh_Hans: 模型版本
     human_description:
-      en_US: "Choose the Qwen model version"
-      zh_Hans: "选择要使用的Qwen模型版本"
-    llm_description: "Choose the Qwen model version"
+      en_US: "Choose the Qwen image model. Default favors the lowest current Beijing cost tier."
+      zh_Hans: "选择千问图像模型。默认优先当前北京区低成本档。"
+    llm_description: "Choose the Qwen image model"
     form: form
-    default: "qwen-image-2.0-pro"
+    default: "qwen-image-3.0"
     options:
-      - value: "qwen-image-2.0-pro"
+      - value: "qwen-image-3.0"
         label:
-          en_US: "Qwen Image 2.0 Pro"
-          zh_Hans: "Qwen Image 2.0 Pro"
-      - value: "qwen-image-2.0-pro-2026-03-03"
+          en_US: "Qwen Image 3.0 (qwen-image-3.0) - ¥0.18/image at 1K"
+          zh_Hans: "千问图像3.0（qwen-image-3.0）- 1K ¥0.18/张"
+      - value: "qwen-image-3.0-pro"
         label:
-          en_US: "Qwen Image 2.0 Pro 2026-03-03"
-          zh_Hans: "Qwen Image 2.0 Pro 2026-03-03"
+          en_US: "Qwen Image 3.0 Pro (qwen-image-3.0-pro) - ¥0.25/image at 1K"
+          zh_Hans: "千问图像3.0 Pro（qwen-image-3.0-pro）- 1K ¥0.25/张"
+      - value: "qwen-image-2.1-pro"
+        label:
+          en_US: "Qwen Image 2.1 Pro (qwen-image-2.1-pro) - ¥0.25/image"
+          zh_Hans: "千问图像2.1 Pro（qwen-image-2.1-pro）- ¥0.25/张"
       - value: "qwen-image-2.0"
         label:
-          en_US: "Qwen Image 2.0"
-          zh_Hans: "Qwen Image 2.0"
-      - value: "qwen-image-2.0-2026-03-03"
+          en_US: "Qwen Image 2.0 (qwen-image-2.0) - ¥0.20/image"
+          zh_Hans: "千问图像2.0（qwen-image-2.0）- ¥0.20/张"
+      - value: "qwen-image-2.0-pro"
         label:
-          en_US: "Qwen Image 2.0 2026-03-03"
-          zh_Hans: "Qwen Image 2.0 2026-03-03"
-      - value: "qwen-image-max"
-        label:
-          en_US: "Qwen Image Max"
-          zh_Hans: "Qwen Image Max"
-      - value: "qwen-image-max-2025-12-30"
-        label:
-          en_US: "Qwen Image Max 2025-12-30"
-          zh_Hans: "Qwen Image Max 2025-12-30"
+          en_US: "Qwen Image 2.0 Pro (qwen-image-2.0-pro) - ¥0.50/image"
+          zh_Hans: "千问图像2.0 Pro（qwen-image-2.0-pro）- ¥0.50/张"
       - value: "qwen-image-plus"
         label:
-          en_US: "Qwen Image Plus"
-          zh_Hans: "Qwen Image Plus"
-      - value: "qwen-image-plus-2026-01-09"
+          en_US: "Qwen Image Plus (qwen-image-plus) - ¥0.20/image"
+          zh_Hans: "千问图像Plus（qwen-image-plus）- ¥0.20/张"
+      - value: "qwen-image-max"
         label:
-          en_US: "Qwen Image Plus 2026-01-09"
-          zh_Hans: "Qwen Image Plus 2026-01-09"
+          en_US: "Qwen Image Max (qwen-image-max) - ¥0.50/image"
+          zh_Hans: "千问图像Max（qwen-image-max）- ¥0.50/张"
       - value: "qwen-image"
         label:
-          en_US: "Qwen Image"
-          zh_Hans: "Qwen Image"
+          en_US: "Qwen Image (qwen-image) - ¥0.25/image"
+          zh_Hans: "千问图像（qwen-image）- ¥0.25/张"
+
 extra:
   python:
     source: tools/qwen_text_2_image.py

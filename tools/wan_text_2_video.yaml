@@ -103,35 +103,24 @@ parameters:
     options:
       - value: "832*480"
         label: { en_US: "832×480 (480P 16:9)", zh_Hans: "832×480（480P 16:9）" }
-        show_on: [{ variable: model, value: "wan2.2-t2v-plus" }]
       - value: "1920*1080"
         label: { en_US: "1920×1080 (1080P 16:9)", zh_Hans: "1920×1080（1080P 16:9）" }
-        show_on: [{ variable: model, value: "wan2.2-t2v-plus" }]
       - value: "832*480"
         label: { en_US: "832×480 (480P 16:9)", zh_Hans: "832×480（480P 16:9）" }
-        show_on: [{ variable: model, value: "wanx2.1-t2v-turbo" }]
       - value: "1280*720"
         label: { en_US: "1280×720 (720P 16:9)", zh_Hans: "1280×720（720P 16:9）" }
-        show_on: [{ variable: model, value: "wanx2.1-t2v-turbo" }]
       - value: "1280*720"
         label: { en_US: "1280×720 (720P 16:9)", zh_Hans: "1280×720（720P 16:9）" }
-        show_on: [{ variable: model, value: "wanx2.1-t2v-plus" }]
       - value: "832*480"
         label: { en_US: "832×480 (480P 16:9)", zh_Hans: "832×480（480P 16:9）" }
-        show_on: [{ variable: model, value: "wan2.5-t2v-preview" }]
       - value: "1280*720"
         label: { en_US: "1280×720 (720P 16:9)", zh_Hans: "1280×720（720P 16:9）" }
-        show_on: [{ variable: model, value: "wan2.5-t2v-preview" }]
       - value: "1920*1080"
         label: { en_US: "1920×1080 (1080P 16:9)", zh_Hans: "1920×1080（1080P 16:9）" }
-        show_on: [{ variable: model, value: "wan2.5-t2v-preview" }]
       - value: "1280*720"
         label: { en_US: "1280×720 (720P 16:9)", zh_Hans: "1280×720（720P 16:9）" }
-        show_on: [{ variable: model, value: "wan2.6-t2v" }]
       - value: "1920*1080"
         label: { en_US: "1920×1080 (1080P 16:9)", zh_Hans: "1920×1080（1080P 16:9）" }
-        show_on: [{ variable: model, value: "wan2.6-t2v" }]
-
   - name: resolution
     type: select
     required: false
@@ -145,29 +134,20 @@ parameters:
     options:
       - value: "480P"
         label: { en_US: "480P", zh_Hans: "480P" }
-        show_on: [{ variable: model, value: "wan3.0-video-prime" }]
       - value: "720P"
         label: { en_US: "720P", zh_Hans: "720P" }
-        show_on: [{ variable: model, value: "wan3.0-video-prime" }]
       - value: "1080P"
         label: { en_US: "1080P", zh_Hans: "1080P" }
-        show_on: [{ variable: model, value: "wan3.0-video-prime" }]
       - value: "480P"
         label: { en_US: "480P", zh_Hans: "480P" }
-        show_on: [{ variable: model, value: "wan3.0-video" }]
       - value: "720P"
         label: { en_US: "720P", zh_Hans: "720P" }
-        show_on: [{ variable: model, value: "wan3.0-video" }]
       - value: "1080P"
         label: { en_US: "1080P", zh_Hans: "1080P" }
-        show_on: [{ variable: model, value: "wan3.0-video" }]
       - value: "720P"
         label: { en_US: "720P", zh_Hans: "720P" }
-        show_on: [{ variable: model, value: "wan2.7-t2v" }]
       - value: "1080P"
         label: { en_US: "1080P", zh_Hans: "1080P" }
-        show_on: [{ variable: model, value: "wan2.7-t2v" }]
-
   - name: ratio
     type: select
     required: false
@@ -181,32 +161,22 @@ parameters:
     options:
       - value: "adaptive"
         label: { en_US: "Adaptive", zh_Hans: "自适应" }
-        show_on: [{ variable: model, value: "wan3.0-video-prime" }]
       - value: "16:9"
         label: { en_US: "16:9", zh_Hans: "16:9" }
-        show_on: [{ variable: model, value: "wan3.0-video-prime" }]
       - value: "9:16"
         label: { en_US: "9:16", zh_Hans: "9:16" }
-        show_on: [{ variable: model, value: "wan3.0-video-prime" }]
       - value: "adaptive"
         label: { en_US: "Adaptive", zh_Hans: "自适应" }
-        show_on: [{ variable: model, value: "wan3.0-video" }]
       - value: "16:9"
         label: { en_US: "16:9", zh_Hans: "16:9" }
-        show_on: [{ variable: model, value: "wan3.0-video" }]
       - value: "9:16"
         label: { en_US: "9:16", zh_Hans: "9:16" }
-        show_on: [{ variable: model, value: "wan3.0-video" }]
       - value: "16:9"
         label: { en_US: "16:9", zh_Hans: "16:9" }
-        show_on: [{ variable: model, value: "wan2.7-t2v" }]
       - value: "9:16"
         label: { en_US: "9:16", zh_Hans: "9:16" }
-        show_on: [{ variable: model, value: "wan2.7-t2v" }]
       - value: "1:1"
         label: { en_US: "1:1", zh_Hans: "1:1" }
-        show_on: [{ variable: model, value: "wan2.7-t2v" }]
-
   - name: duration
     type: select
     required: false
@@ -220,56 +190,38 @@ parameters:
     options:
       - value: "5"
         label: { en_US: "5s", zh_Hans: "5秒" }
-        show_on: [{ variable: model, value: "wan2.2-t2v-plus" }]
       - value: "5"
         label: { en_US: "5s", zh_Hans: "5秒" }
-        show_on: [{ variable: model, value: "wanx2.1-t2v-turbo" }]
       - value: "5"
         label: { en_US: "5s", zh_Hans: "5秒" }
-        show_on: [{ variable: model, value: "wanx2.1-t2v-plus" }]
       - value: "5"
         label: { en_US: "5s", zh_Hans: "5秒" }
-        show_on: [{ variable: model, value: "wan2.5-t2v-preview" }]
       - value: "10"
         label: { en_US: "10s", zh_Hans: "10秒" }
-        show_on: [{ variable: model, value: "wan2.5-t2v-preview" }]
       - value: "2"
         label: { en_US: "2s", zh_Hans: "2秒" }
-        show_on: [{ variable: model, value: "wan2.6-t2v" }]
       - value: "5"
         label: { en_US: "5s", zh_Hans: "5秒" }
-        show_on: [{ variable: model, value: "wan2.6-t2v" }]
       - value: "15"
         label: { en_US: "15s", zh_Hans: "15秒" }
-        show_on: [{ variable: model, value: "wan2.6-t2v" }]
       - value: "2"
         label: { en_US: "2s", zh_Hans: "2秒" }
-        show_on: [{ variable: model, value: "wan2.7-t2v" }]
       - value: "5"
         label: { en_US: "5s", zh_Hans: "5秒" }
-        show_on: [{ variable: model, value: "wan2.7-t2v" }]
       - value: "15"
         label: { en_US: "15s", zh_Hans: "15秒" }
-        show_on: [{ variable: model, value: "wan2.7-t2v" }]
       - value: "2"
         label: { en_US: "2s", zh_Hans: "2秒" }
-        show_on: [{ variable: model, value: "wan3.0-video" }]
       - value: "5"
         label: { en_US: "5s", zh_Hans: "5秒" }
-        show_on: [{ variable: model, value: "wan3.0-video" }]
       - value: "30"
         label: { en_US: "30s", zh_Hans: "30秒" }
-        show_on: [{ variable: model, value: "wan3.0-video" }]
       - value: "2"
         label: { en_US: "2s", zh_Hans: "2秒" }
-        show_on: [{ variable: model, value: "wan3.0-video-prime" }]
       - value: "5"
         label: { en_US: "5s", zh_Hans: "5秒" }
-        show_on: [{ variable: model, value: "wan3.0-video-prime" }]
       - value: "30"
         label: { en_US: "30s", zh_Hans: "30秒" }
-        show_on: [{ variable: model, value: "wan3.0-video-prime" }]
-
   - name: prompt_extend
     type: boolean
     required: false

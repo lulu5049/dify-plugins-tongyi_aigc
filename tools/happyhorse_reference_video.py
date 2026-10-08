@@ -86,9 +86,6 @@ class HappyHorseReferenceVideoTool(Tool):
             for note in compatibility_notes:
                 yield self.create_text_message(f"ℹ️ {note}")
 
-            yield self.create_text_message(msg)
-                    return
-
             watermark = tool_parameters.get("watermark")
             if watermark is not None:
                 if isinstance(watermark, str):

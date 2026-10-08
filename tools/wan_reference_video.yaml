@@ -158,13 +158,13 @@ parameters:
       en_US: "Duration (seconds)"
       zh_Hans: "时长(秒)"
     human_description:
-      en_US: "Duration in seconds. wan2.6: 2-10. wan2.7: 2-10 with reference video, otherwise 2-15."
-      zh_Hans: "生成视频时长。wan2.6: 2-10；wan2.7: 含参考视频时2-10，否则2-15。"
+      en_US: "Duration in seconds. Wan 3.0: 2-30 (or -1 smart duration; input+output video total <=30). wan2.7: 2-10 with reference video, otherwise 2-15. wan2.6: 2-10."
+      zh_Hans: "生成视频时长。Wan 3.0：2-30（-1为智能时长；输入+输出视频总时长<=30）；wan2.7：含参考视频时2-10，否则2-15；wan2.6：2-10。"
     llm_description: "Duration of the generated video in seconds"
     form: form
     default: "5"
     min: 2
-    max: 15
+    max: 30
   - name: resolution
     type: select
     required: false

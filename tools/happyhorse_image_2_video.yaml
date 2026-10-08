@@ -88,7 +88,7 @@ parameters:
       zh_Hans: "生成视频的时长（秒），取值范围[3, 15]。"
     llm_description: "Duration of the generated video in seconds"
     form: form
-    default: 5
+    default: 3
     min: 3
     max: 15
   - name: watermark
@@ -102,7 +102,7 @@ parameters:
       zh_Hans: "在视频中添加水印"
     llm_description: "Whether to add watermark"
     form: form
-    default: true
+    default: false
   - name: seed
     type: number
     required: false

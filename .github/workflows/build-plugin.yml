@@ -5,6 +5,9 @@ on:
   push:
     branches:
       - master
+  pull_request:
+    branches:
+      - master
 
 permissions:
   contents: read
@@ -44,6 +47,12 @@ jobs:
           echo "0cef74bcae375a4337c2ff7d42e4787717981a795e1c23cf56bb27ec07ec8304  $RUNNER_TEMP/dify-plugin" | sha256sum -c -
           chmod +x "$RUNNER_TEMP/dify-plugin"
           "$RUNNER_TEMP/dify-plugin" version || true
+
+      - name: Validate Python syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m compileall -q tools provider main.py
 
       - name: Package plugin
         shell: bash

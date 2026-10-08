@@ -291,3 +291,66 @@ def normalize_happyhorse_parameters(model: str, p: dict[str, Any], with_ratio: b
     if seed is not None:
         params["seed"] = seed
     return params, notes
+
+
+def normalize_reference_parameters(model: str, p: dict[str, Any], has_reference_video: bool) -> tuple[dict[str, Any], list[str]]:
+    params: dict[str, Any] = {}
+    notes: list[str] = []
+
+    if is_wan3(model):
+        resolution = str(p.get("resolution") or "1080P").upper()
+        if resolution not in {"480P", "720P", "1080P"}:
+            resolution = "1080P"
+            notes.append(f"{model} 分辨率已改为 1080P")
+        ratio = str(p.get("ratio") or "adaptive")
+        if ratio not in WAN3_RATIOS:
+            ratio = "adaptive"
+            notes.append(f"{model} 宽高比已改为 adaptive")
+        duration = _as_int(p.get("duration"), 5)
+        if duration != -1:
+            duration = min(30, max(2, duration))
+        params.update(resolution=resolution, ratio=ratio, duration=duration)
+        if p.get("audio") is not None:
+            params["audio"] = bool(p.get("audio"))
+        seed = _valid_seed(p.get("seed"), allow_minus_one=True)
+        if seed is not None:
+            params["seed"] = seed
+
+    elif model.startswith("wan2.7-r2v"):
+        resolution = str(p.get("resolution") or "1080P").upper()
+        if resolution not in {"720P", "1080P"}:
+            resolution = "1080P"
+            notes.append(f"{model} 仅支持 720P/1080P，已改为 1080P")
+        ratio = str(p.get("ratio") or "16:9")
+        if ratio not in WAN27_RATIOS:
+            ratio = "16:9"
+            notes.append(f"{model} 宽高比已改为 16:9")
+        max_duration = 10 if has_reference_video else 15
+        duration = min(max_duration, max(2, _as_int(p.get("duration"), 5)))
+        params.update(resolution=resolution, ratio=ratio, duration=duration)
+        seed = _valid_seed(p.get("seed"))
+        if seed is not None:
+            params["seed"] = seed
+
+    else:
+        # Wan 2.6 reference-video models use legacy width*height size values.
+        size = str(p.get("size") or "1920*1080").replace(" ", "")
+        allowed = _allowed_sizes(("720P", "1080P"))
+        if size not in allowed:
+            notes.append(f"{model} 不支持分辨率 {size}，已改为 1920*1080")
+            size = "1920*1080"
+        params["size"] = size
+        params["duration"] = min(10, max(2, _as_int(p.get("duration"), 5)))
+        if p.get("shot_type") in {"single", "multi"}:
+            params["shot_type"] = p.get("shot_type")
+        if model == "wan2.6-r2v-flash" and p.get("audio") is not None:
+            params["audio"] = bool(p.get("audio"))
+        seed = _valid_seed(p.get("seed"))
+        if seed is not None:
+            params["seed"] = seed
+
+    if p.get("prompt_extend") is not None:
+        params["prompt_extend"] = bool(p.get("prompt_extend"))
+    if p.get("watermark") is not None:
+        params["watermark"] = bool(p.get("watermark"))
+    return params, notes

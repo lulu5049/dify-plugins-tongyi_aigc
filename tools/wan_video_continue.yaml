@@ -25,8 +25,8 @@ parameters:
     options:
       - value: "wan2.7-i2v"
         label:
-          en_US: "Wanxiang 2.7 Image to Video"
-          zh_Hans: "万相2.7图生视频"
+          en_US: "Wanxiang 2.7 Image to Video (wan2.7-i2v)"
+          zh_Hans: "万相2.7图生视频（wan2.7-i2v）"
   - name: prompt
     type: string
     required: false

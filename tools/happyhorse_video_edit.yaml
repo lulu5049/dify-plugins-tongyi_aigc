@@ -25,8 +25,8 @@ parameters:
     options:
       - value: "happyhorse-1.0-video-edit"
         label:
-          en_US: "HappyHorse 1.0 Video Edit"
-          zh_Hans: "HappyHorse 1.0 视频编辑"
+          en_US: "HappyHorse 1.0 Video Edit (happyhorse-1.0-video-edit)"
+          zh_Hans: "HappyHorse 1.0 视频编辑（happyhorse-1.0-video-edit）"
   - name: prompt
     type: string
     required: true

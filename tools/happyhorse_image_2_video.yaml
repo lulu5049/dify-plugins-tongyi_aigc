@@ -25,12 +25,12 @@ parameters:
     options:
       - value: "happyhorse-1.1-i2v"
         label:
-          en_US: "HappyHorse 1.1 Image to Video"
-          zh_Hans: "HappyHorse 1.1 图生视频"
+          en_US: "HappyHorse 1.1 Image to Video (happyhorse-1.1-i2v)"
+          zh_Hans: "HappyHorse 1.1 图生视频（happyhorse-1.1-i2v）"
       - value: "happyhorse-1.0-i2v"
         label:
-          en_US: "HappyHorse 1.0 Image to Video"
-          zh_Hans: "HappyHorse 1.0 图生视频"
+          en_US: "HappyHorse 1.0 Image to Video (happyhorse-1.0-i2v)"
+          zh_Hans: "HappyHorse 1.0 图生视频（happyhorse-1.0-i2v）"
   - name: prompt
     type: string
     required: false
@@ -64,8 +64,11 @@ parameters:
       zh_Hans: "视频分辨率。可选 720P 或 1080P。"
     llm_description: "Resolution for the generated video"
     form: form
-    default: "1080P"
     options:
+      - value: "480P"
+        label:
+          en_US: "480P (HappyHorse 1.1 only)"
+          zh_Hans: "480P（仅 HappyHorse 1.1）"
       - value: "720P"
         label:
           en_US: "720P"
@@ -85,7 +88,7 @@ parameters:
       zh_Hans: "生成视频的时长（秒），取值范围[3, 15]。"
     llm_description: "Duration of the generated video in seconds"
     form: form
-    default: 5
+    default: 3
     min: 3
     max: 15
   - name: watermark
@@ -99,7 +102,7 @@ parameters:
       zh_Hans: "在视频中添加水印"
     llm_description: "Whether to add watermark"
     form: form
-    default: true
+    default: false
   - name: seed
     type: number
     required: false

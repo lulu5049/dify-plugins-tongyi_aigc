@@ -221,8 +221,12 @@ parameters:
     options:
       - value: "qwen-mt-image"
         label:
-          en_US: "Qwen MT Image"
-          zh_Hans: "Qwen MT Image"
+          en_US: "Qwen MT Image (qwen-mt-image) - ¥0.003/image"
+          zh_Hans: "千问图片翻译（qwen-mt-image）- ¥0.003/张"
+      - value: "qwen-mt-image-2.0"
+        label:
+          en_US: "Qwen MT Image 2.0 (qwen-mt-image-2.0) - ¥0.004/image"
+          zh_Hans: "千问图片翻译2.0（qwen-mt-image-2.0）- ¥0.004/张"
 extra:
   python:
     source: tools/qwen_image_translate.py

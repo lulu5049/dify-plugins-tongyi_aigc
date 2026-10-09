@@ -25,8 +25,8 @@ parameters:
     options:
       - value: "wan2.7-i2v"
         label:
-          en_US: "Wanxiang 2.7 Image to Video"
-          zh_Hans: "万相2.7图生视频"
+          en_US: "Wanxiang 2.7 Image to Video (wan2.7-i2v)"
+          zh_Hans: "万相2.7图生视频（wan2.7-i2v）"
   - name: prompt
     type: string
     required: false
@@ -104,7 +104,6 @@ parameters:
       zh_Hans: "输出分辨率：720P 或 1080P"
     llm_description: "Output resolution for video continuation"
     form: form
-    default: "1080P"
     options:
       - value: "720P"
         label:
@@ -125,7 +124,7 @@ parameters:
       zh_Hans: "输出总时长（秒，2-15）"
     llm_description: "Total output duration in seconds"
     form: form
-    default: 5
+    default: 2
     min: 2
     max: 15
   - name: prompt_extend
@@ -139,7 +138,7 @@ parameters:
       zh_Hans: "启用提示词智能改写"
     llm_description: "Whether to enable prompt intelligent rewriting"
     form: form
-    default: true
+    default: false
   - name: watermark
     type: boolean
     required: false

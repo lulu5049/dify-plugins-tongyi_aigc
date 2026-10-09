@@ -11,6 +11,8 @@ from dify_plugin.entities.tool import ToolInvokeMessage
 from PIL import Image
 
 from tools.bailian_endpoints import native_base_url
+from tools.bailian_task_waiter import maybe_wait_for_video
+from tools.video_model_compat import normalize_happyhorse_parameters
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +39,7 @@ class HappyHorseImage2VideoTool(Tool):
                 "X-DashScope-Async": "enable",
             }
 
-            model = str(tool_parameters.get("model") or "happyhorse-1.0-i2v").strip()
+            model = str(tool_parameters.get("model") or "happyhorse-1.1-i2v").strip()
             
             # Extract and process image
             image_obj = tool_parameters.get("image_input")
@@ -71,53 +73,12 @@ class HappyHorseImage2VideoTool(Tool):
                 "parameters": {},
             }
 
-            params = payload["parameters"]
-
-            resolution = tool_parameters.get("resolution")
-            if resolution:
-                params["resolution"] = str(resolution).strip()
-
-            duration = tool_parameters.get("duration")
-            if duration is not None:
-                try:
-                    params["duration"] = int(duration)
-                except (TypeError, ValueError):
-                    msg = f"❌ 无效的 duration 参数: {duration}，必须是整数"
-                    logger.error(msg)
-                    yield self.create_text_message(msg)
-                    return
-
-            watermark = tool_parameters.get("watermark")
-            if watermark is not None:
-                if isinstance(watermark, str):
-                    watermark_lower = watermark.lower()
-                    if watermark_lower in ["true", "1", "yes"]:
-                        params["watermark"] = True
-                    elif watermark_lower in ["false", "0", "no"]:
-                        params["watermark"] = False
-                    else:
-                        msg = f"❌ 无效的 watermark 参数: {watermark}，必须是布尔值"
-                        logger.error(msg)
-                        yield self.create_text_message(msg)
-                        return
-                else:
-                    try:
-                        params["watermark"] = bool(watermark)
-                    except (TypeError, ValueError):
-                        msg = f"❌ 无效的 watermark 参数: {watermark}，必须是布尔值"
-                        logger.error(msg)
-                        yield self.create_text_message(msg)
-                        return
-
-            seed = tool_parameters.get("seed")
-            if seed is not None:
-                try:
-                    params["seed"] = int(seed)
-                except (TypeError, ValueError):
-                    msg = f"❌ 无效的 seed 参数: {seed}，必须是整数"
-                    logger.error(msg)
-                    yield self.create_text_message(msg)
-                    return
+            params, compatibility_notes = normalize_happyhorse_parameters(
+                model, tool_parameters, with_ratio=False
+            )
+            payload["parameters"] = params
+            for note in compatibility_notes:
+                yield self.create_text_message(f"ℹ️ {note}")
 
             # Consolidate init message
             init_msg = (
@@ -177,6 +138,15 @@ class HappyHorseImage2VideoTool(Tool):
                 )
                 yield self.create_text_message(f"Request ID: {request_id}")
                 yield self.create_json_message(result_data)
+                return
+
+            handled = yield from maybe_wait_for_video(
+                self,
+                self.runtime.credentials,
+                result_data,
+                tool_parameters,
+            )
+            if handled:
                 return
 
             yield self.create_text_message(

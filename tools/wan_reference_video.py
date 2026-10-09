@@ -11,6 +11,8 @@ from dify_plugin import Tool
 from dify_plugin.entities.tool import ToolInvokeMessage
 
 from tools.bailian_endpoints import native_base_url
+from tools.bailian_task_waiter import maybe_wait_for_video
+from tools.video_model_compat import is_wan3, normalize_reference_parameters
 
 logger = logging.getLogger(__name__)
 
@@ -23,8 +25,10 @@ class WanReferenceVideoTool(Tool):
         logger.info("Starting wan reference-to-video task")
 
         try:
-            model = tool_parameters.get("model", "wan2.6-r2v").strip()
+            model = tool_parameters.get("model", "wan2.6-r2v-flash").strip()
+            is_wan30 = is_wan3(model)
             is_wan27 = model.startswith("wan2.7-")
+            uses_media_protocol = is_wan30 or is_wan27
             api_key = self.runtime.credentials.get("api_key")
             if not api_key:
                 msg = "❌ API密钥未配置"
@@ -42,8 +46,10 @@ class WanReferenceVideoTool(Tool):
                 for url in reference_urls_str.split(";")
                 if url.strip()
             ]
-            if len(reference_urls) > 5:
-                yield self.create_text_message("❌ 最多支持5个参考文件")
+            if len(reference_urls) > (15 if is_wan30 else 5):
+                yield self.create_text_message(
+                    "❌ Wan 3.0 最多支持10张参考图 + 5段参考视频；Wan 2.7/2.6 此工具最多支持5个参考素材。"
+                )
                 return
 
             processed_urls: list[str] = []
@@ -59,7 +65,7 @@ class WanReferenceVideoTool(Tool):
                 yield self.create_text_message("❌ 请输入提示词")
                 return
 
-            prompt_limit = 5000 if is_wan27 else 1500
+            prompt_limit = 20000 if is_wan30 else (5000 if is_wan27 else 1500)
             payload: dict[str, Any] = {
                 "model": model,
                 "input": {
@@ -69,7 +75,7 @@ class WanReferenceVideoTool(Tool):
             }
 
             input_params = payload["input"]
-            if is_wan27:
+            if uses_media_protocol:
                 media: list[dict[str, str]] = []
                 for media_url in processed_urls:
                     media_type = self._infer_media_type(media_url)
@@ -78,7 +84,11 @@ class WanReferenceVideoTool(Tool):
                 first_frame_image = self._process_media(
                     tool_parameters.get("first_frame_image", "")
                 )
-                if first_frame_image:
+                if first_frame_image and is_wan30:
+                    yield self.create_text_message(
+                        "ℹ️ Wan 3.0 的参考生视频模式不能与 first_frame 混用，已忽略首帧参数。"
+                    )
+                elif first_frame_image:
                     media.append({"type": "first_frame", "url": first_frame_image})
 
                 if len([m for m in media if m["type"] == "first_frame"]) > 1:
@@ -93,83 +103,42 @@ class WanReferenceVideoTool(Tool):
                     ]
                 )
                 if visual_reference_count == 0:
-                    yield self.create_text_message("❌ wan2.7-r2v 至少需要1个参考图像或视频")
+                    yield self.create_text_message(f"❌ {model} 至少需要1个参考图像或视频")
                     return
-                if visual_reference_count > 5:
+                if is_wan27 and visual_reference_count > 5:
                     yield self.create_text_message("❌ wan2.7-r2v 的图像+视频总数不能超过5")
                     return
+                if is_wan30:
+                    video_count = len([m for m in media if m["type"] == "reference_video"])
+                    image_count = len([m for m in media if m["type"] == "reference_image"])
+                    if video_count > 5 or image_count > 10:
+                        yield self.create_text_message("❌ Wan 3.0 最多支持5段参考视频、10张参考图片")
+                        return
 
                 input_params["media"] = media
 
                 reference_voice = self._process_audio(tool_parameters.get("reference_voice"))
-                if reference_voice:
+                if reference_voice and is_wan30:
+                    media.append({"type": "reference_audio", "url": reference_voice})
+                elif reference_voice:
                     input_params["reference_voice"] = reference_voice
             else:
                 input_params["reference_urls"] = processed_urls
 
             negative_prompt = tool_parameters.get("negative_prompt", "").strip()
-            if negative_prompt:
+            if negative_prompt and not is_wan30:
                 input_params["negative_prompt"] = negative_prompt[:500]
 
-            params = payload["parameters"]
-            size = tool_parameters.get("size", "1920*1080").strip()
-            resolution = str(tool_parameters.get("resolution", "")).strip().upper()
-            ratio = str(tool_parameters.get("ratio", "")).strip()
-            if is_wan27:
-                if resolution:
-                    params["resolution"] = resolution
-                if ratio:
-                    params["ratio"] = ratio
-                if size and ("resolution" not in params or "ratio" not in params):
-                    mapped_resolution, mapped_ratio = self._map_size_to_wan27(size)
-                    if mapped_resolution and "resolution" not in params:
-                        params["resolution"] = mapped_resolution
-                    if mapped_ratio and "ratio" not in params:
-                        params["ratio"] = mapped_ratio
-            elif size:
-                params["size"] = size
-
-            duration = tool_parameters.get("duration", 5)
-            if duration is not None:
-                try:
-                    duration_value = int(duration)
-                    if duration_value < 2:
-                        duration_value = 2
-                    if is_wan27:
-                        has_reference_video = any(
-                            self._infer_media_type(media_url) == "reference_video"
-                            for media_url in processed_urls
-                        )
-                        max_duration = 10 if has_reference_video else 15
-                        if duration_value > max_duration:
-                            duration_value = max_duration
-                    elif duration_value > 10:
-                        duration_value = 10
-                    params["duration"] = duration_value
-                except (TypeError, ValueError):
-                    pass
-
-            prompt_extend = tool_parameters.get("prompt_extend")
-            if prompt_extend is not None:
-                params["prompt_extend"] = prompt_extend
-
-            shot_type = tool_parameters.get("shot_type", "single").strip()
-            if shot_type and not is_wan27:
-                params["shot_type"] = shot_type
-            if (
-                tool_parameters.get("audio") is not None
-                and model == "wan2.6-r2v-flash"
-                and not is_wan27
-            ):
-                params["audio"] = tool_parameters.get("audio")
-            if tool_parameters.get("watermark") is not None:
-                params["watermark"] = tool_parameters.get("watermark")
-            seed = tool_parameters.get("seed")
-            if seed is not None:
-                try:
-                    params["seed"] = int(seed)
-                except (TypeError, ValueError):
-                    pass
+            has_reference_video = any(
+                self._infer_media_type(media_url) == "reference_video"
+                for media_url in processed_urls
+            )
+            params, compatibility_notes = normalize_reference_parameters(
+                model, tool_parameters, has_reference_video
+            )
+            payload["parameters"] = params
+            for note in compatibility_notes:
+                yield self.create_text_message(f"ℹ️ {note}")
 
             api_url = f"{native_base_url(self.runtime.credentials)}/services/aigc/video-generation/video-synthesis"
             headers = {
@@ -229,6 +198,15 @@ class WanReferenceVideoTool(Tool):
                 result_data = response.json()
             except json.JSONDecodeError:
                 yield self.create_text_message("❌ API 响应解析失败（非JSON）")
+                return
+
+            handled = yield from maybe_wait_for_video(
+                self,
+                self.runtime.credentials,
+                result_data,
+                tool_parameters,
+            )
+            if handled:
                 return
 
             if "output" in result_data:

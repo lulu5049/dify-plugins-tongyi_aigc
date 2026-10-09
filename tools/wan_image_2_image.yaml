@@ -21,20 +21,20 @@ parameters:
       zh_Hans: "用于图生图的AI模型"
     llm_description: "AI model for image generation"
     form: form
-    default: "wan2.7-image-pro"
+    default: "wan2.7-image"
     options:
       - value: "wan2.7-image-pro"
         label:
-          en_US: "Wanxiang 2.7 Image Pro"
-          zh_Hans: "万相2.7 图像专业版"
+          en_US: "Wanxiang 2.7 Image Pro (wan2.7-image-pro) - ¥0.50/image"
+          zh_Hans: "万相2.7图像专业版（wan2.7-image-pro）- ¥0.50/张"
       - value: "wan2.7-image"
         label:
-          en_US: "Wanxiang 2.7 Image"
-          zh_Hans: "万相2.7 图像"
+          en_US: "Wanxiang 2.7 Image (wan2.7-image) - ¥0.20/image"
+          zh_Hans: "万相2.7图像（wan2.7-image）- ¥0.20/张"
       - value: "wan2.6-image"
         label:
-          en_US: "Wanxiang 2.6 Image"
-          zh_Hans: "万相2.6 图生图"
+          en_US: "Wanxiang 2.6 Image (wan2.6-image) - ¥0.20/image"
+          zh_Hans: "万相2.6图像（wan2.6-image）- ¥0.20/张"
   - name: prompt
     type: string
     required: true
@@ -68,7 +68,7 @@ parameters:
       zh_Hans: "生成图像的尺寸"
     llm_description: "Size of the generated image"
     form: form
-    default: "2K"
+    default: "1K"
     options:
       - value: "2K"
         label:
@@ -136,7 +136,7 @@ parameters:
       zh_Hans: "生成图像数量（1-4；wan2.7开启组图时可到12）"
     llm_description: "Number of images to generate (1-4, or up to 12 with sequential mode on wan2.7)"
     form: form
-    default: 3
+    default: 1
     min: 1
     max: 12
   - name: enable_sequential

@@ -74,7 +74,7 @@ class WanImage2ImageTool(Tool):
                 processed_images.append(processed_image)
 
             supported_models = {"wan2.7-image-pro", "wan2.7-image", "wan2.6-image"}
-            model = tool_parameters.get("model", "wan2.7-image-pro")
+            model = tool_parameters.get("model", "wan2.7-image")
             if model not in supported_models:
                 msg = f"❌ 不支持的模型: {model}"
                 logger.warning(msg)

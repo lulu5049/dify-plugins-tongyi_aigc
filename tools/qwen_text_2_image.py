@@ -13,10 +13,15 @@ from tools.bailian_endpoints import native_base_url
 
 logger = logging.getLogger(__name__)
 
-QWEN_IMAGE_2_SERIES_MODELS = {
+QWEN_IMAGE_FLEXIBLE_MODELS = {
+    "qwen-image-3.0",
+    "qwen-image-3.0-pro",
+    "qwen-image-2.1-pro",
     "qwen-image-2.0",
     "qwen-image-2.0-2026-03-03",
     "qwen-image-2.0-pro",
+    "qwen-image-2.0-pro-2026-06-22",
+    "qwen-image-2.0-pro-2026-04-22",
     "qwen-image-2.0-pro-2026-03-03",
 }
 
@@ -57,10 +62,11 @@ class QwenText2ImageTool(Tool):
                 yield self.create_text_message(msg)
                 return
 
-            if len(prompt) > 800:
-                prompt = prompt[:800]
+            prompt_limit = 18000 if model in {"qwen-image-3.0", "qwen-image-3.0-pro", "qwen-image-2.1-pro"} else 5200
+            if len(prompt) > prompt_limit:
+                prompt = prompt[:prompt_limit]
 
-            model = tool_parameters.get("model", "qwen-image-2.0-pro")
+            model = tool_parameters.get("model", "qwen-image-3.0")
             negative_prompt = tool_parameters.get("negative_prompt", "")
             if negative_prompt:
                 negative_prompt = negative_prompt[:500]
@@ -71,9 +77,9 @@ class QwenText2ImageTool(Tool):
             n = tool_parameters.get("n")
 
             if not size:
-                size = "2048*2048" if model in QWEN_IMAGE_2_SERIES_MODELS else "1664*928"
+                size = "1024*1024" if model in QWEN_IMAGE_FLEXIBLE_MODELS else "1664*928"
 
-            if model in QWEN_IMAGE_2_SERIES_MODELS:
+            if model in QWEN_IMAGE_FLEXIBLE_MODELS:
                 if not self._is_valid_qwen_image_2_size(size):
                     msg = "❌ qwen-image-2.0系列的size总像素需在512*512到2048*2048之间"
                     logger.warning(msg)
@@ -122,7 +128,7 @@ class QwenText2ImageTool(Tool):
                 except (TypeError, ValueError):
                     n_value = 1
 
-                if model in QWEN_IMAGE_2_SERIES_MODELS:
+                if model in QWEN_IMAGE_FLEXIBLE_MODELS:
                     if n_value < 1:
                         n_value = 1
                     if n_value > 6:

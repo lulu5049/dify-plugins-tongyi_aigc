@@ -13,6 +13,8 @@ from dify_plugin.entities.tool import ToolInvokeMessage
 from PIL import Image
 
 from tools.bailian_endpoints import native_base_url
+from tools.bailian_task_waiter import maybe_wait_for_video
+from tools.video_model_compat import is_wan3, normalize_kf2v_parameters
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +28,9 @@ class WanFirstEndImage2VideoTool(Tool):
 
         try:
             model = tool_parameters.get("model", "wan2.2-kf2v-flash").strip()
+            is_wan30 = is_wan3(model)
             is_wan27_i2v = model.startswith("wan2.7-i2v")
+            uses_media_protocol = is_wan30 or is_wan27_i2v
             api_key = self.runtime.credentials.get("api_key")
             if not api_key:
                 msg = "❌ API密钥未配置"
@@ -63,17 +67,17 @@ class WanFirstEndImage2VideoTool(Tool):
                     return
 
             prompt = tool_parameters.get("prompt", "").strip()
-            if not is_wan27_i2v and not template and not prompt:
+            if not uses_media_protocol and not template and not prompt:
                 yield self.create_text_message("❌ 非模板模式下必须提供提示词")
                 return
 
             payload: dict[str, Any]
-            if is_wan27_i2v:
+            if uses_media_protocol:
                 media: list[dict[str, str]] = [
                     {"type": "first_frame", "url": processed_first},
                     {"type": "last_frame", "url": processed_last},
                 ]
-                if audio_url:
+                if audio_url and is_wan27_i2v:
                     media.append({"type": "driving_audio", "url": audio_url})
 
                 payload = {
@@ -85,10 +89,10 @@ class WanFirstEndImage2VideoTool(Tool):
                 }
                 if template:
                     yield self.create_text_message(
-                        "ℹ️ wan2.7-i2v 不支持 template 参数，已忽略。"
+                        f"ℹ️ {model} 不支持 template 参数，已忽略。"
                     )
                 if prompt:
-                    payload["input"]["prompt"] = prompt[:5000]
+                    payload["input"]["prompt"] = prompt[:20000 if is_wan30 else 5000]
             else:
                 payload = {
                     "model": model,
@@ -107,30 +111,15 @@ class WanFirstEndImage2VideoTool(Tool):
                     payload["input"]["prompt"] = prompt[:800]
 
             negative_prompt = tool_parameters.get("negative_prompt", "").strip()
-            if negative_prompt:
+            if negative_prompt and not is_wan30:
                 payload["input"]["negative_prompt"] = negative_prompt[:500]
 
-            params = payload["parameters"]
-            resolution = tool_parameters.get("resolution", "720P").strip().upper()
-            if is_wan27_i2v and resolution and resolution not in {"720P", "1080P"}:
-                yield self.create_text_message(
-                    "ℹ️ wan2.7-i2v 仅支持 720P/1080P，已自动回退为 1080P。"
-                )
-                resolution = "1080P"
-            if resolution:
-                params["resolution"] = resolution
-            params["duration"] = 5
-            if tool_parameters.get("prompt_extend") is not None:
-                params["prompt_extend"] = tool_parameters.get("prompt_extend")
-            if tool_parameters.get("watermark") is not None:
-                params["watermark"] = tool_parameters.get("watermark")
-            if tool_parameters.get("seed") is not None:
-                try:
-                    params["seed"] = int(tool_parameters.get("seed"))
-                except (TypeError, ValueError):
-                    pass
+            params, compatibility_notes = normalize_kf2v_parameters(model, tool_parameters)
+            payload["parameters"] = params
+            for note in compatibility_notes:
+                yield self.create_text_message(f"ℹ️ {note}")
 
-            if is_wan27_i2v:
+            if uses_media_protocol:
                 api_url = (
                     f"{native_base_url(self.runtime.credentials)}/services/aigc/"
                     "video-generation/video-synthesis"
@@ -197,6 +186,15 @@ class WanFirstEndImage2VideoTool(Tool):
                 result_data = response.json()
             except json.JSONDecodeError:
                 yield self.create_text_message("❌ API 响应解析失败（非JSON）")
+                return
+
+            handled = yield from maybe_wait_for_video(
+                self,
+                self.runtime.credentials,
+                result_data,
+                tool_parameters,
+            )
+            if handled:
                 return
 
             if "output" in result_data:

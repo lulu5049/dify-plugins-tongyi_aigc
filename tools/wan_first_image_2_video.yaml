@@ -21,36 +21,48 @@ parameters:
       zh_Hans: "用于视频生成的AI模型"
     llm_description: "AI model for video generation"
     form: form
-    default: "wan2.6-i2v"
+    default: "wan2.2-i2v-flash"
     options:
+      - value: "wan3.0-video-prime"
+        label:
+          en_US: "Wan 3.0 Video Prime (wan3.0-video-prime)"
+          zh_Hans: "万相3.0视频优速版（wan3.0-video-prime）"
+      - value: "wan3.0-video"
+        label:
+          en_US: "Wan 3.0 Video (wan3.0-video)"
+          zh_Hans: "万相3.0视频（wan3.0-video）"
       - value: "wan2.7-i2v"
         label:
-          en_US: "Wanxiang 2.7 Image to Video"
-          zh_Hans: "万相2.7图生视频"
+          en_US: "Wanxiang 2.7 Image to Video (wan2.7-i2v)"
+          zh_Hans: "万相2.7图生视频（wan2.7-i2v）"
+      - value: "wan2.6-i2v-flash"
+        label:
+          en_US: "Wanxiang 2.6 Image to Video Flash (wan2.6-i2v-flash)"
+          zh_Hans: "万相2.6图生视频闪速版（wan2.6-i2v-flash）"
       - value: "wan2.6-i2v"
         label:
-          en_US: "Wanxiang 2.6 Image to Video"
-          zh_Hans: "万相2.6图生视频"
+          en_US: "Wanxiang 2.6 Image to Video (wan2.6-i2v)"
+          zh_Hans: "万相2.6图生视频（wan2.6-i2v）"
       - value: "wan2.5-i2v-preview"
         label:
-          en_US: "Wanxiang 2.5 Image to Video Preview"
-          zh_Hans: "万相2.5图生视频预览"
+          en_US: "Wanxiang 2.5 Image to Video Preview (wan2.5-i2v-preview)"
+          zh_Hans: "万相2.5图生视频预览（wan2.5-i2v-preview）"
       - value: "wan2.2-i2v-flash"
         label:
-          en_US: "Wanxiang 2.2 Image to Video Flash"
-          zh_Hans: "万相2.2图生视频闪速"
+          en_US: "Wanxiang 2.2 Image to Video Flash (wan2.2-i2v-flash)"
+          zh_Hans: "万相2.2图生视频闪速版（wan2.2-i2v-flash）"
       - value: "wan2.2-i2v-plus"
         label:
-          en_US: "Wanxiang 2.2 Image to Video Plus"
-          zh_Hans: "万相2.2图生视频增强"
+          en_US: "Wanxiang 2.2 Image to Video Plus (wan2.2-i2v-plus)"
+          zh_Hans: "万相2.2图生视频增强版（wan2.2-i2v-plus）"
       - value: "wanx2.1-i2v-turbo"
         label:
-          en_US: "Wanxiang 2.1 Image to Video Turbo"
-          zh_Hans: "万相2.1图生视频极速"
+          en_US: "Wanxiang 2.1 Image to Video Turbo (wanx2.1-i2v-turbo)"
+          zh_Hans: "万相2.1图生视频极速版（wanx2.1-i2v-turbo）"
       - value: "wanx2.1-i2v-plus"
         label:
-          en_US: "Wanxiang 2.1 Image to Video Plus"
-          zh_Hans: "万相2.1图生视频增强"
+          en_US: "Wanxiang 2.1 Image to Video Plus (wanx2.1-i2v-plus)"
+          zh_Hans: "万相2.1图生视频增强版（wanx2.1-i2v-plus）"
   - name: prompt
     type: string
     required: false
@@ -154,40 +166,153 @@ parameters:
   - name: resolution
     type: select
     required: false
-    label:
-      en_US: "Resolution"
-      zh_Hans: "分辨率"
-    human_description:
-      en_US: "Video resolution quality. wan2.7-i2v supports 720P/1080P only."
-      zh_Hans: "视频分辨率质量。wan2.7-i2v 仅支持 720P/1080P。"
-    llm_description: "Video resolution quality for image-to-video generation"
+    label: { en_US: "Resolution", zh_Hans: "分辨率" }
+    human_description: { en_US: "Available resolutions depend on the selected model.", zh_Hans: "可选分辨率会根据模型动态变化。" }
+    llm_description: "Video resolution"
     form: form
-    default: "1080P"
+    default: "480P"
     options:
       - value: "480P"
-        label:
-          en_US: "480P"
-          zh_Hans: "480P"
+        label: { en_US: "480P", zh_Hans: "480P" }
       - value: "720P"
-        label:
-          en_US: "720P"
-          zh_Hans: "720P"
+        label: { en_US: "720P", zh_Hans: "720P" }
       - value: "1080P"
-        label:
-          en_US: "1080P"
-          zh_Hans: "1080P"
-  - name: duration
-    type: string
+        label: { en_US: "1080P", zh_Hans: "1080P" }
+      - value: "480P"
+        label: { en_US: "480P", zh_Hans: "480P" }
+      - value: "1080P"
+        label: { en_US: "1080P", zh_Hans: "1080P" }
+      - value: "480P"
+        label: { en_US: "480P", zh_Hans: "480P" }
+      - value: "720P"
+        label: { en_US: "720P", zh_Hans: "720P" }
+      - value: "720P"
+        label: { en_US: "720P", zh_Hans: "720P" }
+      - value: "480P"
+        label: { en_US: "480P", zh_Hans: "480P" }
+      - value: "720P"
+        label: { en_US: "720P", zh_Hans: "720P" }
+      - value: "1080P"
+        label: { en_US: "1080P", zh_Hans: "1080P" }
+      - value: "720P"
+        label: { en_US: "720P", zh_Hans: "720P" }
+      - value: "1080P"
+        label: { en_US: "1080P", zh_Hans: "1080P" }
+      - value: "720P"
+        label: { en_US: "720P", zh_Hans: "720P" }
+      - value: "1080P"
+        label: { en_US: "1080P", zh_Hans: "1080P" }
+      - value: "720P"
+        label: { en_US: "720P", zh_Hans: "720P" }
+      - value: "1080P"
+        label: { en_US: "1080P", zh_Hans: "1080P" }
+      - value: "480P"
+        label: { en_US: "480P", zh_Hans: "480P" }
+      - value: "720P"
+        label: { en_US: "720P", zh_Hans: "720P" }
+      - value: "1080P"
+        label: { en_US: "1080P", zh_Hans: "1080P" }
+      - value: "480P"
+        label: { en_US: "480P", zh_Hans: "480P" }
+      - value: "720P"
+        label: { en_US: "720P", zh_Hans: "720P" }
+      - value: "1080P"
+        label: { en_US: "1080P", zh_Hans: "1080P" }
+  - name: ratio
+    type: select
     required: false
     label:
-      en_US: "Duration (seconds)"
-      zh_Hans: "时长(秒)"
+      en_US: "Aspect Ratio"
+      zh_Hans: "宽高比"
     human_description:
-      en_US: "Duration of the generated video in seconds. wan2.6-i2v-flash: integer between [2, 15], default 5. wan2.6-i2v: integer between [2, 15], default 5. wan2.6-i2v-us: 5, 10 or 15, default 5. wan2.5-i2v-preview: 5 or 10, default 5. wan2.2-i2v-plus: fixed at 5 seconds, not modifiable. wan2.2-i2v-flash: fixed at 5 seconds, not modifiable. wanx2.1-i2v-plus: fixed at 5 seconds, not modifiable. wanx2.1-i2v-turbo: 3, 4 or 5, default 5."
-      zh_Hans: "生成视频的时长（秒）。wan2.6-i2v-flash：取值为[2, 15]之间的整数，默认值为5。wan2.6-i2v：取值为[2, 15]之间的整数，默认值为5。wan2.6-i2v-us：可选值为5、10、15，默认值为5。wan2.5-i2v-preview：可选值为5、10，默认值为5。wan2.2-i2v-plus：固定为5秒，且不支持修改。wan2.2-i2v-flash：固定为5秒，且不支持修改。wanx2.1-i2v-plus：固定为5秒，且不支持修改。wanx2.1-i2v-turbo：可选值为3、4或5，默认值为5。"
-    llm_description: "Duration of the generated video in seconds"
+      en_US: "Used by Wan 3.0. Adaptive is recommended for image-to-video."
+      zh_Hans: "用于 Wan 3.0，图生视频推荐使用 adaptive 自适应首帧比例。"
+    llm_description: "Aspect ratio for Wan 3.0 image-to-video"
+    form: form
+    options:
+      - value: "adaptive"
+        label:
+          en_US: "Adaptive"
+          zh_Hans: "自适应"
+      - value: "21:9"
+        label:
+          en_US: "21:9"
+          zh_Hans: "21:9"
+      - value: "16:9"
+        label:
+          en_US: "16:9"
+          zh_Hans: "16:9"
+      - value: "4:3"
+        label:
+          en_US: "4:3"
+          zh_Hans: "4:3"
+      - value: "1:1"
+        label:
+          en_US: "1:1"
+          zh_Hans: "1:1"
+      - value: "3:4"
+        label:
+          en_US: "3:4"
+          zh_Hans: "3:4"
+      - value: "9:16"
+        label:
+          en_US: "9:16"
+          zh_Hans: "9:16"
+  - name: duration
+    type: select
+    required: false
+    label: { en_US: "Duration (seconds)", zh_Hans: "时长（秒）" }
+    human_description: { en_US: "Duration options depend on the selected model.", zh_Hans: "可选时长会根据模型动态变化。" }
+    llm_description: "Video duration"
     form: form
     default: "5"
+    options:
+      - value: "5"
+        label: { en_US: "5s", zh_Hans: "5秒" }
+      - value: "5"
+        label: { en_US: "5s", zh_Hans: "5秒" }
+      - value: "3"
+        label: { en_US: "3s", zh_Hans: "3秒" }
+      - value: "4"
+        label: { en_US: "4s", zh_Hans: "4秒" }
+      - value: "5"
+        label: { en_US: "5s", zh_Hans: "5秒" }
+      - value: "5"
+        label: { en_US: "5s", zh_Hans: "5秒" }
+      - value: "5"
+        label: { en_US: "5s", zh_Hans: "5秒" }
+      - value: "10"
+        label: { en_US: "10s", zh_Hans: "10秒" }
+      - value: "2"
+        label: { en_US: "2s", zh_Hans: "2秒" }
+      - value: "5"
+        label: { en_US: "5s", zh_Hans: "5秒" }
+      - value: "15"
+        label: { en_US: "15s", zh_Hans: "15秒" }
+      - value: "2"
+        label: { en_US: "2s", zh_Hans: "2秒" }
+      - value: "5"
+        label: { en_US: "5s", zh_Hans: "5秒" }
+      - value: "15"
+        label: { en_US: "15s", zh_Hans: "15秒" }
+      - value: "2"
+        label: { en_US: "2s", zh_Hans: "2秒" }
+      - value: "5"
+        label: { en_US: "5s", zh_Hans: "5秒" }
+      - value: "15"
+        label: { en_US: "15s", zh_Hans: "15秒" }
+      - value: "2"
+        label: { en_US: "2s", zh_Hans: "2秒" }
+      - value: "5"
+        label: { en_US: "5s", zh_Hans: "5秒" }
+      - value: "30"
+        label: { en_US: "30s", zh_Hans: "30秒" }
+      - value: "2"
+        label: { en_US: "2s", zh_Hans: "2秒" }
+      - value: "5"
+        label: { en_US: "5s", zh_Hans: "5秒" }
+      - value: "30"
+        label: { en_US: "30s", zh_Hans: "30秒" }
   - name: prompt_extend
     type: boolean
     required: false
@@ -199,7 +324,7 @@ parameters:
       zh_Hans: "启用提示词智能改写"
     llm_description: "Whether to enable prompt intelligent rewriting"
     form: form
-    default: true
+    default: false
   - name: shot_type
     type: select
     required: false
@@ -232,7 +357,7 @@ parameters:
       zh_Hans: "为生成的视频自动添加音频"
     llm_description: "Whether to automatically add audio"
     form: form
-    default: true
+    default: false
   - name: watermark
     type: boolean
     required: false
@@ -244,7 +369,7 @@ parameters:
       zh_Hans: "在视频中添加水印"
     llm_description: "Whether to add watermark"
     form: form
-    default: true
+    default: false
   - name: seed
     type: number
     required: false

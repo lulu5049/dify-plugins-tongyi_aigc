@@ -8,6 +8,8 @@ from dify_plugin import Tool
 from dify_plugin.entities.tool import ToolInvokeMessage
 
 from tools.bailian_endpoints import native_base_url
+from tools.bailian_task_waiter import maybe_wait_for_video
+from tools.video_model_compat import normalize_happyhorse_parameters
 
 logger = logging.getLogger(__name__)
 
@@ -33,7 +35,7 @@ class HappyHorseText2VideoTool(Tool):
                 "X-DashScope-Async": "enable",
             }
 
-            model = tool_parameters.get("model", "happyhorse-1.0-t2v").strip()
+            model = tool_parameters.get("model", "happyhorse-1.1-t2v").strip()
             prompt = tool_parameters.get("prompt", "").strip()
             if not prompt:
                 msg = "❌ 请输入提示词"
@@ -50,39 +52,12 @@ class HappyHorseText2VideoTool(Tool):
                 "parameters": {},
             }
 
-            params = payload["parameters"]
-
-            resolution = tool_parameters.get("resolution")
-            if resolution:
-                params["resolution"] = str(resolution).strip()
-            
-            ratio = tool_parameters.get("ratio")
-            if ratio:
-                params["ratio"] = str(ratio).strip()
-
-            duration = tool_parameters.get("duration")
-            if duration is not None:
-                try:
-                    params["duration"] = int(duration)
-                except (TypeError, ValueError):
-                    msg = f"❌ 无效的 duration 参数: {duration}"
-                    logger.error(msg)
-                    yield self.create_text_message(msg)
-                    return
-            
-            watermark = tool_parameters.get("watermark")
-            if watermark is not None:
-                params["watermark"] = watermark
-
-            seed = tool_parameters.get("seed")
-            if seed is not None:
-                try:
-                    params["seed"] = int(seed)
-                except (TypeError, ValueError):
-                    msg = f"❌ 无效的 seed 参数: {seed}"
-                    logger.error(msg)
-                    yield self.create_text_message(msg)
-                    return
+            params, compatibility_notes = normalize_happyhorse_parameters(
+                model, tool_parameters, with_ratio=True
+            )
+            payload["parameters"] = params
+            for note in compatibility_notes:
+                yield self.create_text_message(f"ℹ️ {note}")
 
             yield self.create_text_message(
                 "🚀 HappyHorse文生视频任务启动中...\n"
@@ -134,6 +109,15 @@ class HappyHorseText2VideoTool(Tool):
                 )
                 yield self.create_text_message(f"Request ID: {request_id}")
                 yield self.create_json_message(result_data)
+                return
+
+            handled = yield from maybe_wait_for_video(
+                self,
+                self.runtime.credentials,
+                result_data,
+                tool_parameters,
+            )
+            if handled:
                 return
 
             yield self.create_text_message(

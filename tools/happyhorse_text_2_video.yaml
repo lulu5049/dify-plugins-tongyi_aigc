@@ -25,12 +25,12 @@ parameters:
     options:
       - value: "happyhorse-1.1-t2v"
         label:
-          en_US: "HappyHorse 1.1 Text to Video"
-          zh_Hans: "HappyHorse 1.1 文生视频"
+          en_US: "HappyHorse 1.1 Text to Video (happyhorse-1.1-t2v)"
+          zh_Hans: "HappyHorse 1.1 文生视频（happyhorse-1.1-t2v）"
       - value: "happyhorse-1.0-t2v"
         label:
-          en_US: "HappyHorse 1.0 Text to Video"
-          zh_Hans: "HappyHorse 1.0 文生视频"
+          en_US: "HappyHorse 1.0 Text to Video (happyhorse-1.0-t2v)"
+          zh_Hans: "HappyHorse 1.0 文生视频（happyhorse-1.0-t2v）"
   - name: prompt
     type: string
     required: true
@@ -53,8 +53,11 @@ parameters:
       zh_Hans: "视频分辨率。可选 720P 或 1080P。"
     llm_description: "Resolution for the generated video"
     form: form
-    default: "1080P"
     options:
+      - value: "480P"
+        label:
+          en_US: "480P (HappyHorse 1.1 only)"
+          zh_Hans: "480P（仅 HappyHorse 1.1）"
       - value: "720P"
         label:
           en_US: "720P"
@@ -74,7 +77,6 @@ parameters:
       zh_Hans: "设置生成视频宽高比。"
     llm_description: "Aspect ratio for generated video"
     form: form
-    default: "16:9"
     options:
       - value: "16:9"
         label:
@@ -96,6 +98,23 @@ parameters:
         label:
           en_US: "3:4"
           zh_Hans: "3:4"
+      - value: "4:5"
+        label:
+          en_US: "4:5"
+          zh_Hans: "4:5"
+      - value: "5:4"
+        label:
+          en_US: "5:4"
+          zh_Hans: "5:4"
+      - value: "9:21"
+        label:
+          en_US: "9:21"
+          zh_Hans: "9:21"
+      - value: "21:9"
+        label:
+          en_US: "21:9"
+          zh_Hans: "21:9"
+
   - name: duration
     type: number
     required: false
@@ -107,7 +126,7 @@ parameters:
       zh_Hans: "生成视频的时长（秒），取值范围[3, 15]。"
     llm_description: "Duration of the generated video in seconds"
     form: form
-    default: 5
+    default: 3
   - name: watermark
     type: boolean
     required: false
@@ -119,7 +138,7 @@ parameters:
       zh_Hans: "在视频中添加水印"
     llm_description: "Whether to add watermark"
     form: form
-    default: true
+    default: false
   - name: seed
     type: number
     required: false

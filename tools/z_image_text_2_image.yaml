@@ -32,7 +32,7 @@ parameters:
       zh_Hans: "生成图像的尺寸"
     llm_description: "Size of the generated image"
     form: form
-    default: "1024*1536"
+    default: "1024*1024"
     options:
       - value: "1024*1024"
         label:
@@ -206,8 +206,8 @@ parameters:
     options:
       - value: "z-image-turbo"
         label:
-          en_US: "Z-Image Turbo"
-          zh_Hans: "Z-Image Turbo"
+          en_US: "Z-Image Turbo (z-image-turbo) - ¥0.10/image with prompt rewrite off"
+          zh_Hans: "Z-Image Turbo（z-image-turbo）- 关闭提示词改写 ¥0.10/张"
 extra:
   python:
     source: tools/z_image_text_2_image.py
